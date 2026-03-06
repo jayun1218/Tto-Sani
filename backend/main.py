@@ -26,7 +26,14 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# ... (CORS 설정 생략) ...
+# CORS 설정
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(expenses_router)
 app.include_router(analysis_router)

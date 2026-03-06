@@ -10,7 +10,7 @@ from models.expense import Expense
 def analyze_summary(expenses: List[Expense]) -> Dict[str, Any]:
     """카테고리별 지출 합계 및 총 지출 반환."""
     if not expenses:
-        return {"total": 0, "by_category": {}, "count": 0}
+        return {"total": 0, "by_category": [], "count": 0}
 
     category_totals: Dict[str, float] = defaultdict(float)
     total = 0.0

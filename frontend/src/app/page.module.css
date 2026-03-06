@@ -1,105 +1,141 @@
 .page {
-    padding: 100px 0 100px;
     min-height: 100vh;
+    padding: 100px 0 80px;
+    background-color: var(--bg-primary);
 }
 
 .center {
     min-height: 80vh;
     display: flex;
     flex-direction: column;
-    items-center: center;
+    align-items: center;
     justify-content: center;
+    text-align: center;
 }
 
 .header {
-    margin-bottom: 40px;
-    text-align: center;
-}
-
-.title {
-    font-size: 2.2rem;
-    font-weight: 800;
-    margin-bottom: 8px;
-}
-
-.subtitle {
-    font-size: 1rem;
-    color: #8896b3;
-}
-
-.mainGrid {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr;
-    gap: 32px;
-}
-
-.leftCol,
-.rightCol {
     display: flex;
-    flex-direction: column;
-}
-
-.totalBox {
-    padding: 20px;
-    background: rgba(79, 142, 247, 0.08);
-    border-radius: 16px;
+    align-items: flex-start;
+    justify-content: space-between;
     margin-bottom: 32px;
-    text-align: center;
-}
-
-.totalLabel {
-    font-size: 0.85rem;
-    color: #8896b3;
-    display: block;
-    margin-bottom: 4px;
-}
-
-.totalVal {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #4f8ef7;
-}
-
-.donutWrap {
-    max-width: 300px;
-    margin: 0 auto;
-}
-
-.catList {
-    display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 16px;
 }
 
-.catItem {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.header h1 {
+    font-size: 2.22rem;
+    font-weight: 800;
+    color: var(--text-primary);
 }
 
-.catInfo {
+.statGrid {
+    margin-bottom: 32px;
+}
+
+.statCard {
+    text-align: center;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    padding: 24px;
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+}
+
+.statIcon {
+    font-size: 2rem;
+}
+
+.statVal {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--accent-blue);
+}
+
+.charts {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.donutWrap {
+    max-width: 280px;
+    margin: 0 auto;
+}
+
+.tableCard {
+    padding: 28px;
+    background: var(--bg-card) !important;
+    border: 1px solid var(--border) !important;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
     font-weight: 600;
 }
 
+.table td {
+    padding: 18px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    font-size: 0.95rem;
+    vertical-align: middle;
+    color: var(--text-primary);
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
 .catDot {
+    display: inline-block;
     width: 10px;
     height: 10px;
     border-radius: 50%;
+    margin-right: 12px;
 }
 
-.catAmt {
+.amount {
     font-weight: 700;
-    color: #f0f4ff;
+    color: var(--text-primary);
 }
 
-@media (max-width: 900px) {
-    .mainGrid {
+.bar {
+    height: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 5px;
+    overflow: hidden;
+    min-width: 100px;
+}
+
+.barFill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@media (max-width: 1024px) {
+    .charts {
         grid-template-columns: 1fr;
     }
+}
 
+@media (max-width: 768px) {
     .header {
         text-align: left;
     }

@@ -11,44 +11,35 @@ import {
     BarElement,
     Title,
 } from "chart.js";
-import { Doughnut } from "react-chartjs-2";
+import { Doughnut, Bar } from "react-chartjs-2";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import styles from "./page.module.css";
-import MoneyTree from "@/components/MoneyTree";
-import MissionCard from "@/components/MissionCard";
 
 Chart.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
-const PALETTE = ["#4f8ef7", "#8b5cf6", "#10d9a0", "#f97316", "#ef4444"];
+const PALETTE = [
+    "#4f8ef7", "#8b5cf6", "#10d9a0", "#f97316",
+    "#ef4444", "#fbbf24", "#06b6d4", "#ec4899",
+];
 
-interface Progress {
-    total_points: number;
-    level: number;
-    level_name: string;
-}
-
-interface Summary {
-    total: number;
-    count: number;
-    by_category: { category: string; amount: number; ratio: number }[];
-}
+interface CategoryItem { category: string; amount: number; ratio: number; }
+interface Summary { total: number; count: number; by_category: CategoryItem[]; }
 
 export default function HomePage() {
+    const router = useRouter();
     const [summary, setSummary] = useState<Summary | null>(null);
-    const [progress, setProgress] = useState<Progress | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     const fetchData = async () => {
         try {
-            const [summaryRes, progressRes] = await Promise.all([
-                axios.get(`${API}/analysis/summary`),
-                axios.get(`${API}/gamification/progress`)
-            ]);
-            setSummary(summaryRes.data);
-            setProgress(progressRes.data);
+            const res = await axios.get(`${API}/analysis/summary`);
+            setSummary(res.data);
         } catch (err) {
-            console.error("데이터 로딩 실패");
+            setError("백엔드 서버에 연결할 수 없습니다.");
         } finally {
             setLoading(false);
         }
@@ -60,71 +51,129 @@ export default function HomePage() {
 
     if (loading) return (
         <div className={styles.center}>
-            <div className="spinner" />
-            <p className="mt-4">데이터를 불러오는 중...</p>
+            <div className="spinner" style={{ width: 40, height: 40 }} />
+            <p className="mt-4">데이터를 분석 중입니다...</p>
+        </div>
+    );
+
+    if (error || !summary || summary.count === 0) return (
+        <div className={styles.center}>
+            <p style={{ fontSize: "3rem" }}>📂</p>
+            <h2 className="mt-4">{error || "소비 데이터가 없습니다"}</h2>
+            <p className="text-muted mt-2">먼저 지출 내역을 추가하거나 CSV 파일을 업로드해주세요.</p>
+            <div className="mt-6 flex gap-4">
+                <Link href="/add" className="btn btn-primary">직접 추가하기</Link>
+                <Link href="/upload" className="btn btn-outline">CSV 업로드하기</Link>
+            </div>
         </div>
     );
 
     const donutData = {
-        labels: summary?.by_category.slice(0, 5).map(c => c.category) || [],
+        labels: summary.by_category.map(c => c.category),
         datasets: [{
-            data: summary?.by_category.slice(0, 5).map(c => c.amount) || [],
+            data: summary.by_category.map(c => c.amount),
             backgroundColor: PALETTE,
             borderWidth: 0,
+            hoverOffset: 8,
         }],
+    };
+
+    const barData = {
+        labels: summary.by_category.map(c => c.category),
+        datasets: [{
+            label: "지출(원)",
+            data: summary.by_category.map(c => c.amount),
+            backgroundColor: PALETTE,
+            borderRadius: 8,
+        }],
+    };
+
+    const chartOpts = {
+        responsive: true,
+        plugins: { legend: { labels: { color: "#8896b3", font: { size: 13 } } } },
+    };
+    const barOpts = {
+        ...chartOpts,
+        scales: {
+            x: { ticks: { color: "#8896b3" }, grid: { color: "rgba(255,255,255,0.05)" } },
+            y: { ticks: { color: "#8896b3" }, grid: { color: "rgba(255,255,255,0.05)" } },
+        },
     };
 
     return (
         <div className={styles.page}>
             <div className="container">
-                <header className={styles.header}>
-                    <h1 className={styles.title}>내 소비 대시보드 💰</h1>
-                    <p className={styles.subtitle}>오늘의 지출을 확인하고 나무를 키워보세요!</p>
-                </header>
+                <div className={styles.header}>
+                    <div>
+                        <span className="badge badge-purple">📊 소비 분석</span>
+                        <h1 className="mt-2">이번 달 소비 현황</h1>
+                    </div>
+                    <Link href="/insights" className="btn btn-primary">절약 전략 보기 →</Link>
+                </div>
 
-                <div className={styles.mainGrid}>
-                    {/* 왼쪽: 나무 & 미션 */}
-                    <div className={styles.leftCol}>
-                        <MoneyTree
-                            level={progress?.level || 1}
-                            levelName={progress?.level_name || "씨앗"}
-                        />
-                        <div className="mt-6">
-                            <MissionCard onProgressUpdate={fetchData} />
+                {/* 통계 카드 */}
+                <div className={`grid-4 ${styles.statGrid}`}>
+                    {[
+                        { label: "총 지출", value: `${summary.total.toLocaleString()}원`, icon: "💸" },
+                        { label: "거래 건수", value: `${summary.count}건`, icon: "📝" },
+                        { label: "주요 카테고리", value: summary.by_category[0]?.category ?? "-", icon: "🏆" },
+                        { label: "최고 지출 비율", value: `${summary.by_category[0]?.ratio ?? 0}%`, icon: "📈" },
+                    ].map(({ label, value, icon }) => (
+                        <div key={label} className={`card ${styles.statCard}`}>
+                            <span className={styles.statIcon}>{icon}</span>
+                            <p className="text-sm text-muted">{label}</p>
+                            <p className={styles.statVal}>{value}</p>
+                        </div>
+                    ))}
+                </div>
+
+                {/* 차트 영역 */}
+                <div className={styles.charts}>
+                    <div className="card">
+                        <h3 className="mb-4">카테고리별 소비 비율</h3>
+                        <div className={styles.donutWrap}>
+                            <Doughnut data={donutData} options={{ ...chartOpts, cutout: "65%" }} />
                         </div>
                     </div>
+                    <div className="card">
+                        <h3 className="mb-4">카테고리별 지출 금액</h3>
+                        <Bar data={barData} options={barOpts as any} />
+                    </div>
+                </div>
 
-                    {/* 오른쪽: 소비 요약 */}
-                    <div className={styles.rightCol}>
-                        <div className="card">
-                            <h3 className="mb-4">이번 달 지출 요약</h3>
-                            <div className={styles.totalBox}>
-                                <span className={styles.totalLabel}>총 지출 금액</span>
-                                <h2 className={styles.totalVal}>{summary?.total.toLocaleString()}원</h2>
-                            </div>
-                            <div className={styles.donutWrap}>
-                                <Doughnut
-                                    data={donutData}
-                                    options={{ cutout: "70%", plugins: { legend: { position: "bottom" } } }}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="card mt-6">
-                            <h3 className="mb-4">주요 소비 항목</h3>
-                            <div className={styles.catList}>
-                                {summary?.by_category.slice(0, 3).map((cat, i) => (
-                                    <div key={cat.category} className={styles.catItem}>
-                                        <div className={styles.catInfo}>
-                                            <span className={styles.catDot} style={{ background: PALETTE[i] }} />
-                                            <span>{cat.category}</span>
+                {/* 테이블 */}
+                <div className={`card ${styles.tableCard}`}>
+                    <h3 className="mb-4">카테고리별 상세 내역</h3>
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
+                                <th>카테고리</th>
+                                <th>지출 금액</th>
+                                <th>비율</th>
+                                <th>비중</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {summary.by_category.map((item, i) => (
+                                <tr key={item.category}>
+                                    <td>
+                                        <span className={styles.catDot} style={{ background: PALETTE[i % PALETTE.length] }} />
+                                        {item.category}
+                                    </td>
+                                    <td className={styles.amount}>{item.amount.toLocaleString()}원</td>
+                                    <td>{item.ratio}%</td>
+                                    <td>
+                                        <div className={styles.bar}>
+                                            <div
+                                                className={styles.barFill}
+                                                style={{ width: `${item.ratio}%`, background: PALETTE[i % PALETTE.length] }}
+                                            />
                                         </div>
-                                        <span className={styles.catAmt}>{cat.amount.toLocaleString()}원</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

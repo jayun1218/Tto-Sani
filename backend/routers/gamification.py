@@ -13,7 +13,7 @@ class MissionOut(BaseModel):
     id: int
     title: str
     description: str
-    point: int
+    points: int
     is_completed: int
     
     class Config:
@@ -23,6 +23,9 @@ class ProgressOut(BaseModel):
     total_points: int
     level: int
     level_name: str
+    current_exp: int
+    max_exp: int
+    attendance_streak: int
 
     class Config:
         from_attributes = True
@@ -35,6 +38,19 @@ LEVEL_NAMES = {
     5: "황금 나무"
 }
 
+LEVEL_MAX_EXP = {
+    1: 100,
+    2: 200,
+    3: 400,
+    4: 800,
+    5: 999999
+}
+
+WATER_EXP = 10
+WATER_COST = 50
+SUPPLEMENT_EXP = 50
+SUPPLEMENT_COST = 200
+
 @router.get("/missions", response_model=List[MissionOut])
 def get_daily_missions(db: Session = Depends(get_db)):
     today = datetime.now().date()
@@ -43,9 +59,9 @@ def get_daily_missions(db: Session = Depends(get_db)):
     # 미션이 없으면 기본 미션 생성
     if not missions:
         default_missions = [
-            Mission(title="오늘 카페 가지 않기", description="커피 대신 텀블러를 사용해보세요!", point=15, date=today),
-            Mission(title="무지출 챌린지", description="오늘 하루 지출 0원에 도전하세요!", point=30, date=today),
-            Mission(title="편의점 유혹 이기기", description="편의점 대신 집밥을 먹어보세요!", point=20, date=today)
+            Mission(title="오늘 카페 가지 않기", description="커피 대신 텀블러를 사용해보세요!", points=15, date=today),
+            Mission(title="무지출 챌린지", description="오늘 하루 지출 0원에 도전하세요!", points=30, date=today),
+            Mission(title="편의점 유혹 이기기", description="편의점 대신 집밥을 먹어보세요!", points=20, date=today)
         ]
         db.add_all(default_missions)
         db.commit()
@@ -70,28 +86,122 @@ def complete_mission(mission_id: int, db: Session = Depends(get_db)):
         progress = UserProgress(total_points=0, level=1)
         db.add(progress)
     
-    progress.total_points += mission.point
+    progress.total_points += mission.points
     
-    # 레벨업 로직 (예: 100포인트당 레벨업)
-    new_level = (progress.total_points // 100) + 1
-    if new_level > 5: new_level = 5
-    progress.level = new_level
+    # 미션 완료 시 경험치도 소폭 상승 (예: 포인트의 20%)
+    progress.current_exp += int(mission.points * 0.2)
+    
+    # 레벨업 체크
+    while progress.level < 5 and progress.current_exp >= LEVEL_MAX_EXP[progress.level]:
+        progress.current_exp -= LEVEL_MAX_EXP[progress.level]
+        progress.level += 1
     
     db.commit()
     db.refresh(progress)
     
     return {
         "message": "미션 완료!",
-        "added_points": mission.point,
+        "added_points": mission.points,
         "current_total": progress.total_points,
-        "current_level": progress.level
+        "current_level": progress.level,
+        "current_exp": progress.current_exp
     }
+
+@router.post("/attendance")
+def check_attendance(db: Session = Depends(get_db)):
+    progress = db.query(UserProgress).first()
+    if not progress:
+        progress = UserProgress(total_points=0, level=1)
+        db.add(progress)
+    
+    today = datetime.now().date()
+    if progress.last_attendance_date == today:
+        return {"message": "이미 오늘 출석체크를 완료했습니다.", "already_done": True}
+    
+    # 연속 출석 확인
+    if progress.last_attendance_date:
+        from datetime import timedelta
+        yesterday = today - timedelta(days=1)
+        if progress.last_attendance_date == yesterday:
+            progress.attendance_streak += 1
+        else:
+            progress.attendance_streak = 1
+    else:
+        progress.attendance_streak = 1
+    
+    progress.last_attendance_date = today
+    
+    # 기본 포인트 보상
+    reward = 100
+    message = "출석체크 완료! 100P를 획득했습니다."
+    
+    # 연속 출석 보상
+    streak = progress.attendance_streak
+    if streak == 5:
+        reward += 500
+        message += " (5일 연속 보너스 +500P!)"
+    elif streak == 10:
+        reward += 1000
+        message += " (10일 연속 보너스 +1000P!)"
+    elif streak >= 30 and streak % 30 == 0:
+        reward += 3000
+        message += " (한 달 연속 보너스 +3000P!)"
+    
+    progress.total_points += reward
+    db.commit()
+    
+    return {
+        "message": message,
+        "reward": reward,
+        "streak": streak,
+        "total_points": progress.total_points
+    }
+
+@router.post("/water")
+def give_water(db: Session = Depends(get_db)):
+    progress = db.query(UserProgress).first()
+    if not progress:
+        raise HTTPException(status_code=404, detail="사용자 정보를 찾을 수 없습니다.")
+    
+    if progress.total_points < WATER_COST:
+        raise HTTPException(status_code=400, detail=f"포인트가 부족합니다. (필요: {WATER_COST}P)")
+    
+    progress.total_points -= WATER_COST
+    progress.current_exp += WATER_EXP
+    
+    # 레벨업 체크
+    while progress.level < 5 and progress.current_exp >= LEVEL_MAX_EXP[progress.level]:
+        progress.current_exp -= LEVEL_MAX_EXP[progress.level]
+        progress.level += 1
+        
+    db.commit()
+    return {"message": "물을 주었습니다!", "exp_gained": WATER_EXP, "current_level": progress.level}
+
+@router.post("/supplement")
+def give_supplement(db: Session = Depends(get_db)):
+    progress = db.query(UserProgress).first()
+    if not progress:
+        raise HTTPException(status_code=404, detail="사용자 정보를 찾을 수 없습니다.")
+    
+    if progress.total_points < SUPPLEMENT_COST:
+        raise HTTPException(status_code=400, detail=f"포인트가 부족합니다. (필요: {SUPPLEMENT_COST}P)")
+    
+    progress.total_points -= SUPPLEMENT_COST
+    progress.current_exp += SUPPLEMENT_EXP
+    
+    # 레벨업 체크
+    while progress.level < 5 and progress.current_exp >= LEVEL_MAX_EXP[progress.level]:
+        progress.current_exp -= LEVEL_MAX_EXP[progress.level]
+        progress.level += 1
+        
+    db.commit()
+    return {"message": "영양제를 주었습니다!", "exp_gained": SUPPLEMENT_EXP, "current_level": progress.level}
 
 @router.get("/progress", response_model=ProgressOut)
 def get_progress(db: Session = Depends(get_db)):
     progress = db.query(UserProgress).first()
     if not progress:
-        progress = UserProgress(total_points=0, level=1)
+        progress = UserProgress(total_points=0, level=1, current_exp=0, attendance_streak=0)
         db.add(progress)
         db.commit()
         db.refresh(progress)
@@ -99,5 +209,8 @@ def get_progress(db: Session = Depends(get_db)):
     return ProgressOut(
         total_points=progress.total_points,
         level=progress.level,
-        level_name=LEVEL_NAMES.get(progress.level, "씨앗")
+        level_name=LEVEL_NAMES.get(progress.level, "씨앗"),
+        current_exp=progress.current_exp,
+        max_exp=LEVEL_MAX_EXP.get(progress.level, 100),
+        attendance_streak=progress.attendance_streak
     )

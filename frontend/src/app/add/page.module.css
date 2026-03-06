@@ -76,6 +76,24 @@
     color: #4f8ef7;
 }
 
+.typeBtn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #8896b3;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.typeActive {
+    background: #4f8ef7;
+    border-color: #4f8ef7;
+    color: white;
+}
+
 @media (max-width: 480px) {
     .categoryGrid {
         grid-template-columns: repeat(3, 1fr);

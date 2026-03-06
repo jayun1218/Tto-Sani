@@ -1,0 +1,123 @@
+.container {
+    min-height: 100vh;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.5rem;
+    font-family: 'Inter', sans-serif;
+}
+
+@media (min-width: 769px) {
+    .container {
+        padding-top: 64px;
+    }
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.backButton {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.streakSection {
+    background: #f8fafc;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.streakCount {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #ef4444;
+    margin: 0;
+}
+
+.streakLabel {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.attendanceGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.dayItem {
+    aspect-ratio: 1;
+    background: #f1f5f9;
+    border-radius: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    position: relative;
+}
+
+.dayItem.checked {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.checkIcon {
+    font-size: 1.25rem;
+}
+
+.bonusInfo {
+    background: #eff6ff;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.bonusTitle {
+    font-weight: 700;
+    color: #1e40af;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.bonusList {
+    font-size: 0.9rem;
+    color: #3b82f6;
+    margin: 0;
+    padding-left: 1.2rem;
+}
+
+.checkButton {
+    width: 100%;
+    padding: 1.25rem;
+    border-radius: 1rem;
+    border: none;
+    background: #3b82f6;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+}
+
+.checkButton:disabled {
+    background: #cbd5e1;
+    box-shadow: none;
+    cursor: default;
+}

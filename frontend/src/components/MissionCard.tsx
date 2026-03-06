@@ -7,8 +7,8 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 interface Mission {
     id: number;
-    title: str;
-    description: str;
+    title: string;
+    description: string;
     point: number;
     is_completed: number;
 }

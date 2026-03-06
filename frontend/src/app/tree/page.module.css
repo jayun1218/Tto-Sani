@@ -1,0 +1,194 @@
+.container {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #e0f2fe 0%, #ffffff 100%);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+@media (min-width: 769px) {
+    .container {
+        padding-top: 64px;
+    }
+}
+
+.header {
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.backButton {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #334155;
+    cursor: pointer;
+}
+
+.menuButton {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #334155;
+}
+
+.titleSection {
+    padding: 2rem 1.5rem;
+}
+
+.mainTitle {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.subTitle {
+    font-size: 1.2rem;
+    color: #475569;
+    margin: 0.5rem 0 0 0;
+}
+
+.floatingActions {
+    position: absolute;
+    right: 1.5rem;
+    top: 10rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.floatingBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.iconCircle {
+    width: 60px;
+    height: 60px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    font-size: 2rem;
+}
+
+.btnLabel {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #334155;
+}
+
+.treeArea {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding-bottom: 5rem;
+}
+
+.islandWrapper {
+    position: relative;
+}
+
+.bottomSheet {
+    background: white;
+    border-radius: 2rem;
+    padding: 2rem 1.5rem;
+    margin: 0 1rem 2rem 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+}
+
+.progressHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.levelLabel {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: #1e293b;
+}
+
+.percentage {
+    color: #3b82f6;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.progressBarContainer {
+    height: 12px;
+    background: #f1f5f9;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.progressBar {
+    height: 100%;
+    background: #3b82f6;
+    border-radius: 999px;
+    transition: width 0.5s ease-out;
+}
+
+.actionGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.actionCard {
+    background: #f8fafc;
+    border-radius: 1.5rem;
+    padding: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.actionCard:active {
+    transform: scale(0.97);
+    background: #f1f5f9;
+}
+
+.actionInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.actionName {
+    font-weight: 700;
+    color: #1e293b;
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+}
+
+.actionSub {
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.actionIcon {
+    font-size: 2rem;
+}
+
+.actionCard.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

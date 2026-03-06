@@ -43,10 +43,14 @@ export default function AddExpensePage() {
 
     return (
         <div className={styles.page}>
-            <div className="container" style={{ maxWidth: "500px" }}>
+            <div className="container" style={{ maxWidth: "500px", paddingTop: "40px" }}>
                 <div className={styles.header}>
-                    <h2>지출 추가</h2>
-                    <p>오늘의 소비를 기록해보세요</p>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: '20px' }}>
+                        <button className={`${styles.typeBtn} ${styles.typeActive}`}>직접 기록</button>
+                        <button className={styles.typeBtn} onClick={() => router.push('/upload')}>CSV 업로드</button>
+                    </div>
+                    <h2>소비 내역 추가</h2>
+                    <p>오늘의 지출을 기록하고 나무를 키워보세요! 🌱</p>
                 </div>
 
                 <form onSubmit={onSubmit} className={styles.form}>
