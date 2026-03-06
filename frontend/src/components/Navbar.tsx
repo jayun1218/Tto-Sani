@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import styles from "./Navbar.module.css";
 
 const NAV_LINKS = [
@@ -13,6 +15,23 @@ const NAV_LINKS = [
 
 export default function Navbar() {
     const pathname = usePathname();
+    const [points, setPoints] = useState<number | null>(null);
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+    const fetchPoints = async () => {
+        try {
+            const res = await axios.get(`${API_URL}/gamification/progress`);
+            setPoints(res.data.total_points);
+        } catch (error) {
+            console.error('Failed to fetch points:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchPoints();
+        const interval = setInterval(fetchPoints, 5000); // 5초마다 갱신
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <nav className={styles.nav}>
@@ -36,6 +55,16 @@ export default function Navbar() {
                         </li>
                     ))}
                 </ul>
+
+                <div className={styles.userSection}>
+                    {points !== null && (
+                        <div className={styles.pointBadge}>
+                            <span className={styles.pointIcon}>⭐</span>
+                            <span className={styles.pointValue}>{points.toLocaleString()}</span>
+                            <span className={styles.pointUnit}>P</span>
+                        </div>
+                    )}
+                </div>
             </div>
         </nav>
     );

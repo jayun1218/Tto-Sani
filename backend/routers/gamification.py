@@ -31,20 +31,12 @@ class ProgressOut(BaseModel):
         from_attributes = True
 
 LEVEL_NAMES = {
-    1: "씨앗",
-    2: "새싹",
-    3: "어린 나무",
-    4: "큰 나무",
-    5: "황금 나무"
+    1: "씨앗", 6: "새싹", 11: "잎새", 16: "가지", 21: "꽃", 
+    26: "열매", 31: "나무", 36: "숲", 41: "지구", 46: "우주"
 }
 
-LEVEL_MAX_EXP = {
-    1: 100,
-    2: 200,
-    3: 400,
-    4: 800,
-    5: 999999
-}
+LEVEL_MAX_EXP = {i: 50 + (i * 10) for i in range(1, 51)}
+LEVEL_MAX_EXP[50] = 999999
 
 WATER_EXP = 10
 WATER_COST = 50
@@ -92,7 +84,7 @@ def complete_mission(mission_id: int, db: Session = Depends(get_db)):
     progress.current_exp += int(mission.points * 0.2)
     
     # 레벨업 체크
-    while progress.level < 5 and progress.current_exp >= LEVEL_MAX_EXP[progress.level]:
+    while progress.level < 50 and progress.current_exp >= LEVEL_MAX_EXP[progress.level]:
         progress.current_exp -= LEVEL_MAX_EXP[progress.level]
         progress.level += 1
     
@@ -170,7 +162,7 @@ def give_water(db: Session = Depends(get_db)):
     progress.current_exp += WATER_EXP
     
     # 레벨업 체크
-    while progress.level < 5 and progress.current_exp >= LEVEL_MAX_EXP[progress.level]:
+    while progress.level < 50 and progress.current_exp >= LEVEL_MAX_EXP[progress.level]:
         progress.current_exp -= LEVEL_MAX_EXP[progress.level]
         progress.level += 1
         
@@ -190,7 +182,7 @@ def give_supplement(db: Session = Depends(get_db)):
     progress.current_exp += SUPPLEMENT_EXP
     
     # 레벨업 체크
-    while progress.level < 5 and progress.current_exp >= LEVEL_MAX_EXP[progress.level]:
+    while progress.level < 50 and progress.current_exp >= LEVEL_MAX_EXP[progress.level]:
         progress.current_exp -= LEVEL_MAX_EXP[progress.level]
         progress.level += 1
         

@@ -2,83 +2,82 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 32px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    text-align: center;
+    width: 100%;
 }
 
 .treeWrapper {
     position: relative;
+    width: 320px;
+    height: 320px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    margin-bottom: 24px;
+    justify-content: center;
+    margin-bottom: 2rem;
 }
 
-.tree {
-    font-size: 5rem;
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    filter: drop-shadow(0 0 20px rgba(79, 142, 247, 0.3));
-    animation: sway 3s ease-in-out infinite;
+.imageContainer {
+    position: relative;
+    z-index: 2;
+    /* 흰색 배경을 강제로 날려버리기 위한 강력 필터 */
+    filter: brightness(1.1) contrast(1.15);
+    mix-blend-mode: multiply;
+    /* 흰색 배경 제거 최적화 */
+    animation: float 4s ease-in-out infinite;
 }
 
-.level1 {
-    font-size: 2rem;
+.treeImage {
+    object-fit: contain;
 }
 
-.level2 {
-    font-size: 3.5rem;
-}
-
-.level3 {
-    font-size: 5rem;
-}
-
-.level4 {
-    font-size: 6.5rem;
-}
-
-.level5 {
-    font-size: 8rem;
-    filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.5));
-}
-
-.ground {
-    width: 100px;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.1);
+.islandShadow {
+    position: absolute;
+    bottom: 20px;
+    width: 180px;
+    height: 30px;
+    background: rgba(0, 0, 0, 0.1);
     border-radius: 50%;
-    margin-top: -10px;
+    filter: blur(10px);
+    z-index: 1;
 }
 
 .info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
+    text-align: center;
+}
+
+.levelBadge {
+    display: inline-block;
+    padding: 0.4rem 1.2rem;
+    background: var(--gradient-hero);
+    color: white;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 4px 12px rgba(79, 142, 247, 0.3);
 }
 
 .levelName {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #f0f4ff;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
 }
 
 .desc {
-    font-size: 0.9rem;
-    color: #8896b3;
+    font-size: 1rem;
+    color: #64748b;
+    max-width: 240px;
+    line-height: 1.5;
 }
 
-@keyframes sway {
+@keyframes float {
 
     0%,
     100% {
-        transform: rotate(-2deg);
+        transform: translateY(0);
     }
 
     50% {
-        transform: rotate(2deg);
+        transform: translateY(-15px);
     }
 }

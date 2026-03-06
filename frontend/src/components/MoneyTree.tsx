@@ -1,34 +1,36 @@
 "use client";
 import styles from "./MoneyTree.module.css";
+import Image from "next/image";
 
 interface MoneyTreeProps {
     level: number;
     levelName: string;
 }
 
-const TREE_ICONS = {
-    1: "🌱", // 씨앗(새싹)
-    2: "🌿", // 새싹(작은 풀)
-    3: "🌳", // 어린 나무
-    4: "🌲", // 큰 나무
-    5: "🎄", // 황금 나무(화려한 나무)
-};
-
 export default function MoneyTree({ level, levelName }: MoneyTreeProps) {
-    const icon = TREE_ICONS[level as keyof typeof TREE_ICONS] || "🌱";
+    // 50레벨 시스템을 10개 스테이지 이미지로 매핑 (1-5:1, 6-10:2, ..., 46-50:10)
+    const stage = Math.min(10, Math.floor((level - 1) / 5) + 1);
+    const imagePath = `/trees/stage${stage}_v5.png?v=5`;
 
     return (
         <div className={styles.container}>
             <div className={styles.treeWrapper}>
-                <div className={`${styles.tree} ${styles[`level${level}`]}`}>
-                    {icon}
+                <div className={styles.imageContainer}>
+                    <Image
+                        src={imagePath}
+                        alt={levelName}
+                        width={300}
+                        height={300}
+                        className={styles.treeImage}
+                        priority
+                    />
                 </div>
-                <div className={styles.ground}></div>
+                <div className={styles.islandShadow}></div>
             </div>
             <div className={styles.info}>
-                <span className="badge badge-blue">LV.{level}</span>
+                <div className={styles.levelBadge}>LV.{level}</div>
                 <h3 className={styles.levelName}>{levelName}</h3>
-                <p className={styles.desc}>미션을 완료해서 나무를 더 크게 키워보세요!</p>
+                <p className={styles.desc}>정성을 다해 돌볼수록 더 넓은 세상으로 나아갑니다.</p>
             </div>
         </div>
     );

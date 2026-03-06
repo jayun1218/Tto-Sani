@@ -60,9 +60,6 @@ export default function TreePage() {
                 <button className={styles.backButton} onClick={() => router.push('/')}>
                     ←
                 </button>
-                <button className={styles.menuButton}>
-                    ☰
-                </button>
             </header>
 
             {/* Title Section */}
@@ -76,10 +73,6 @@ export default function TreePage() {
                 <div className={styles.floatingBtn} onClick={() => router.push('/missions')}>
                     <div className={styles.iconCircle}>🧪</div>
                     <span className={styles.btnLabel}>미션하기</span>
-                </div>
-                <div className={styles.floatingBtn}>
-                    <div className={styles.iconCircle}>👤</div>
-                    <span className={styles.btnLabel}>친구초대</span>
                 </div>
             </div>
 
