@@ -5,9 +5,10 @@ import styles from "./Navbar.module.css";
 
 const NAV_LINKS = [
     { href: "/", label: "홈" },
-    { href: "/upload", label: "데이터 업로드" },
+    { href: "/add", label: "지출 추가" },
     { href: "/dashboard", label: "소비 분석" },
     { href: "/insights", label: "절약 전략" },
+    { href: "/upload", label: "CSV 업로드" },
 ];
 
 export default function Navbar() {
@@ -36,7 +37,7 @@ export default function Navbar() {
                     ))}
                 </ul>
 
-                <Link href="/upload" className="btn btn-primary" style={{ fontSize: "0.875rem", padding: "10px 20px" }}>
+                <Link href="/add" className="btn btn-primary" style={{ fontSize: "0.875rem", padding: "10px 20px" }}>
                     시작하기 →
                 </Link>
             </div>

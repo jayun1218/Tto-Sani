@@ -72,7 +72,7 @@
 }
 
 @media (max-width: 768px) {
-    .links {
+    .nav {
         display: none;
     }
 }

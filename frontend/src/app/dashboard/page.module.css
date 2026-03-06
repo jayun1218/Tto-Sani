@@ -58,6 +58,10 @@
     .charts {
         grid-template-columns: 1fr;
     }
+
+    .donutWrap {
+        max-width: 320px;
+    }
 }
 
 .donutWrap {

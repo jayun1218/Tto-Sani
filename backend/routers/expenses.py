@@ -19,6 +19,13 @@ from services.classifier import classify_expense
 router = APIRouter(prefix="/expenses", tags=["expenses"])
 
 
+class ExpenseCreate(BaseModel):
+    date: Optional[str] = None
+    description: str
+    amount: float
+    category: str
+
+
 class ExpenseOut(BaseModel):
     id: int
     date: Optional[str]
@@ -121,6 +128,23 @@ async def upload_csv(file: UploadFile = File(...), db: Session = Depends(get_db)
         "saved": saved,
         "skipped": skipped,
     }
+
+
+@router.post("/", response_model=ExpenseOut)
+def create_expense(expense_in: ExpenseCreate, db: Session = Depends(get_db)):
+    """수동으로 지출 내역을 입력한다."""
+    date_val = _parse_date(expense_in.date) if expense_in.date else datetime.now().date()
+    
+    expense = Expense(
+        date=date_val,
+        description=expense_in.description,
+        amount=expense_in.amount,
+        category=expense_in.category,
+    )
+    db.add(expense)
+    db.commit()
+    db.refresh(expense)
+    return expense
 
 
 @router.get("/", response_model=List[ExpenseOut])
