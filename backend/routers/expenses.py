@@ -144,7 +144,14 @@ def create_expense(expense_in: ExpenseCreate, db: Session = Depends(get_db)):
     db.add(expense)
     db.commit()
     db.refresh(expense)
-    return expense
+    return ExpenseOut(
+        id=expense.id,
+        date=str(expense.date) if expense.date else None,
+        description=expense.description,
+        amount=expense.amount,
+        category=expense.category,
+        is_impulse=expense.is_impulse
+    )
 
 
 @router.get("/", response_model=List[ExpenseOut])
