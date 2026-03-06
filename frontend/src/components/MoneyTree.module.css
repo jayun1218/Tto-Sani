@@ -1,0 +1,84 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    text-align: center;
+}
+
+.treeWrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.tree {
+    font-size: 5rem;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: drop-shadow(0 0 20px rgba(79, 142, 247, 0.3));
+    animation: sway 3s ease-in-out infinite;
+}
+
+.level1 {
+    font-size: 2rem;
+}
+
+.level2 {
+    font-size: 3.5rem;
+}
+
+.level3 {
+    font-size: 5rem;
+}
+
+.level4 {
+    font-size: 6.5rem;
+}
+
+.level5 {
+    font-size: 8rem;
+    filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.5));
+}
+
+.ground {
+    width: 100px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    margin-top: -10px;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.levelName {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #f0f4ff;
+}
+
+.desc {
+    font-size: 0.9rem;
+    color: #8896b3;
+}
+
+@keyframes sway {
+
+    0%,
+    100% {
+        transform: rotate(-2deg);
+    }
+
+    50% {
+        transform: rotate(2deg);
+    }
+}

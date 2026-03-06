@@ -12,10 +12,12 @@ import models.expense  # 모델 임포트로 테이블 생성 트리거
 
 from routers.expenses import router as expenses_router
 from routers.analysis import router as analysis_router
+from routers.gamification import router as gamification_router
 
 load_dotenv()
 
 # DB 테이블 생성
+import models.expense  # 모든 모델 테이블 생성 보장
 models.expense.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -24,20 +26,11 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS 설정 (Next.js 개발 서버 허용)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# ... (CORS 설정 생략) ...
 
 app.include_router(expenses_router)
 app.include_router(analysis_router)
+app.include_router(gamification_router)
 
 
 @app.get("/")
