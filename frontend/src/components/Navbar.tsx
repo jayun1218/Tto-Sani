@@ -8,6 +8,8 @@ import styles from "./Navbar.module.css";
 const NAV_LINKS = [
     { href: "/", label: "메인화면" },
     { href: "/add", label: "소비내역 추가" },
+    { href: "/budgets", label: "예산 설정" },
+    { href: "/reports", label: "상세 리포트" },
     { href: "/subscriptions", label: "구독 관리" },
     { href: "/tree", label: "돈나무 키우기" },
     { href: "/missions", label: "오늘의 미션" },

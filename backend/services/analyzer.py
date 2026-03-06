@@ -188,3 +188,54 @@ def detect_subscriptions(expenses: List[Expense]) -> List[Dict[str, Any]]:
             })
 
     return subscriptions
+
+
+def compare_trends(current_expenses: List[Expense], past_month_expenses: List[Expense], past_year_expenses: List[Expense]) -> Dict[str, Any]:
+    """전월 및 전년 동월 대비 지출 트렌드를 분석한다."""
+    current_total = sum(e.amount for e in current_expenses)
+    past_month_total = sum(e.amount for e in past_month_expenses)
+    past_year_total = sum(e.amount for e in past_year_expenses)
+
+    def get_diff(curr, past):
+        if past == 0: return 0
+        return round((curr / past - 1) * 100, 1)
+
+    return {
+        "current_total": round(current_total, 0),
+        "past_month": {
+            "total": round(past_month_total, 0),
+            "diff_ratio": get_diff(current_total, past_month_total)
+        },
+        "past_year": {
+            "total": round(past_year_total, 0),
+            "diff_ratio": get_diff(current_total, past_year_total)
+        }
+    }
+
+
+def analyze_budgets(current_expenses: List[Expense], budgets: List[Any]) -> List[Dict[str, Any]]:
+    """카테고리별 예산 대비 지출 현황을 분석한다."""
+    cat_expence = defaultdict(float)
+    for exp in current_expenses:
+        cat_expence[exp.category] += exp.amount
+    
+    budget_reports = []
+    for b in budgets:
+        spent = cat_expence.get(b.category, 0)
+        remaining = b.amount - spent
+        usage_ratio = (spent / b.amount * 100) if b.amount > 0 else 0
+        
+        status = "normal"
+        if usage_ratio >= 100: status = "exceeded"
+        elif usage_ratio >= 80: status = "danger"
+        
+        budget_reports.append({
+            "category": b.category,
+            "budget_amount": round(b.amount, 0),
+            "spent_amount": round(spent, 0),
+            "remaining_amount": round(remaining, 0),
+            "usage_ratio": round(usage_ratio, 1),
+            "status": status
+        })
+    
+    return budget_reports

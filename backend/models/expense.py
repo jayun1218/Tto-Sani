@@ -50,3 +50,12 @@ class StepRecord(Base):
     date = Column(Date, default=datetime.now().date, unique=True) # 일일 걸음수 기록
     step_count = Column(Integer, default=0)                         # 실제 걸음수
     points_earned = Column(Integer, default=0)                      # 지급된 포인트 (보상 여부)
+
+
+class Budget(Base):
+    __tablename__ = "budgets"
+
+    id = Column(Integer, primary_key=True, index=True)
+    category = Column(String, unique=True, index=True)
+    amount = Column(Float, nullable=False)
+    updated_at = Column(Date, default=datetime.now().date, onupdate=datetime.now().date)

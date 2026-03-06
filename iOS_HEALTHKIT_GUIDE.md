@@ -80,4 +80,60 @@ npx cap sync
 npx cap open ios
 ```
 
-Xcode가 열리면 시뮬레이션 버튼을 눌러 아이폰에서 바로 확인하실 수 있습니다! 😊🚀
+## 6. iOS 네이티브 위젯 개발 (WidgetKit)
+
+아이폰 홈 화면에서 앱을 열지 않고도 남은 예산을 확인하려면 `WidgetKit`을 사용합니다.
+
+### 1) Xcode에서 Widget Extension 추가
+- `File > New > Target` 메뉴에서 **'Widget Extension'**을 선택하고 프로젝트에 추가합니다.
+
+### 2) 위젯 데이터 연동 모델 (Swift)
+위젯의 `IntentTimelineProvider`에서 서버 API(`GET /native/summary`)를 호출하여 데이터를 가져옵니다.
+
+```swift
+struct BudgetEntry: TimelineEntry {
+    let date: Date
+    let monthlyTotal: Int
+    let remainingBudget: Int
+    let totalBudget: Int
+}
+
+func getBudgetInfo(completion: @escaping (BudgetEntry) -> Void) {
+    let url = URL(string: "http://사용자IP:8000/native/summary")!
+    URLSession.shared.dataTask(with: url) { data, _, _ in
+        if let data = data, let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            let entry = BudgetEntry(
+                date: Date(),
+                monthlyTotal: json["monthly_total"] as? Int ?? 0,
+                remainingBudget: json["remaining_budget"] as? Int ?? 0,
+                totalBudget: json["total_budget"] as? Int ?? 0
+            )
+            completion(entry)
+        }
+    }.resume()
+}
+```
+
+### 3) 위젯 UI 구성 (SwiftUI)
+```swift
+struct TtoSaniWidgetView : View {
+    var entry: BudgetEntry
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text("💰 남은 예산")
+                .font(.caption)
+                .foregroundColor(.secondary)
+            Text("\(entry.remainingBudget)원")
+                .font(.headline)
+                .bold()
+            
+            ProgressView(value: Double(entry.monthlyTotal), total: Double(entry.totalBudget))
+                .tint(entry.remainingBudget < 0 ? .red : .blue)
+        }
+        .padding()
+    }
+}
+```
+
+이제 **또사니**는 아이폰 홈 화면에서도 사용자님을 지켜보는 똑똑한 자산 관리 비서가 됩니다! 😊🚀💎✨🍎

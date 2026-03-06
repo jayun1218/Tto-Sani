@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import get_db
-from models.expense import Expense, UserProgress
+from models.expense import Expense, UserProgress, Budget
 from sqlalchemy import extract
 from datetime import datetime
 from typing import Dict, Any
@@ -24,8 +24,16 @@ def get_native_summary(db: Session = Depends(get_db)):
     progress = db.query(UserProgress).first()
     points = progress.total_points if progress else 0
     
+    # 예산 정보 요약
+    budget_total = db.query(Budget).with_entities(Budget.amount).all()
+    total_budget = sum(b[0] for b in budget_total)
+    
+    remaining = total_budget - total if total_budget > 0 else 0
+    
     return {
         "monthly_total": int(total),
+        "total_budget": int(total_budget),
+        "remaining_budget": int(remaining),
         "total_points": points,
         "month": today.month,
         "update_at": today.isoformat()
