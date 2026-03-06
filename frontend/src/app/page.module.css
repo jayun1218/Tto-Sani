@@ -1,0 +1,156 @@
+.page {
+    overflow-x: hidden;
+}
+
+/* ── 히어로 ── */
+.hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 64px;
+    overflow: hidden;
+}
+
+.heroInner {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+    padding-top: 40px;
+    padding-bottom: 80px;
+}
+
+.heroBadge {
+    margin-bottom: 8px;
+}
+
+.heroTitle {
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.heroDesc {
+    font-size: 1.1rem;
+    color: #8896b3;
+    max-width: 560px;
+    line-height: 1.7;
+}
+
+.heroCTA {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.heroStats {
+    display: flex;
+    gap: 48px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.statItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.statValue {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #f0f4ff;
+}
+
+.statLabel {
+    font-size: 0.8rem;
+    color: #8896b3;
+}
+
+/* 배경 글로우 */
+.bgGlow1 {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: rgba(79, 142, 247, 0.08);
+    filter: blur(100px);
+    top: -100px;
+    left: -200px;
+    pointer-events: none;
+}
+
+.bgGlow2 {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: rgba(139, 92, 246, 0.07);
+    filter: blur(100px);
+    bottom: -100px;
+    right: -150px;
+    pointer-events: none;
+}
+
+/* ── 섹션 헤더 ── */
+.sectionHeader {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.sectionHeader p {
+    margin-top: 8px;
+    font-size: 1rem;
+}
+
+/* ── 기능 ── */
+.features {
+    background: rgba(255, 255, 255, 0.01);
+}
+
+/* ── 사용 방법 ── */
+.howto {}
+
+.stepCard {
+    text-align: center;
+}
+
+.stepNum {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #4f8ef7 0%, #8b5cf6 100%);
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: white;
+}
+
+/* ── CTA ── */
+.cta {
+    padding-bottom: 100px;
+}
+
+.ctaCard {
+    background: linear-gradient(135deg, rgba(79, 142, 247, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border: 1px solid rgba(79, 142, 247, 0.25);
+    border-radius: 28px;
+    padding: 64px 48px;
+    text-align: center;
+}
+
+.ctaCard p {
+    font-size: 1.05rem;
+    color: #8896b3;
+}

@@ -1,0 +1,137 @@
+.page {
+    min-height: 100vh;
+    padding: 100px 0 80px;
+}
+
+.center {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.header {
+    margin-bottom: 40px;
+}
+
+.header p {
+    font-size: 1.05rem;
+    color: #8896b3;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* AI 팁 */
+.tipsCard {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.tipsHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.tipsDivider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    margin-bottom: 16px;
+}
+
+.tipItem {
+    padding: 14px;
+    border-radius: 10px;
+    background: rgba(16, 217, 160, 0.04);
+    border-left: 3px solid #10d9a0;
+    margin-bottom: 12px;
+}
+
+.tipItem:last-child {
+    margin-bottom: 0;
+}
+
+.tipText {
+    font-size: 0.92rem;
+    color: #c5d1e8;
+    line-height: 1.7;
+    white-space: pre-wrap;
+}
+
+/* 충동 소비 */
+.impulseAlert {
+    border-color: rgba(249, 115, 22, 0.3) !important;
+    background: linear-gradient(145deg, rgba(249, 115, 22, 0.07) 0%, rgba(239, 68, 68, 0.05) 100%) !important;
+}
+
+.impulseOk {
+    border-color: rgba(16, 217, 160, 0.3) !important;
+    background: rgba(16, 217, 160, 0.05) !important;
+}
+
+.impulseTop {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.redText {
+    color: #ef4444;
+}
+
+.warningCard {
+    border-color: rgba(249, 115, 22, 0.2) !important;
+}
+
+.warningTop {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.warnCat {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.warnAmt {
+    color: #f97316;
+    font-weight: 600;
+}
+
+.impulseItem {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.impulseItem:last-child {
+    border-bottom: none;
+}
+
+.impAmt {
+    font-weight: 700;
+    color: #ef4444;
+}
+
+.navBtns {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 32px;
+    flex-wrap: wrap;
+    gap: 12px;
+}

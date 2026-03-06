@@ -1,0 +1,125 @@
+.page {
+    min-height: 100vh;
+    padding: 100px 0 80px;
+}
+
+.center {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.header h1 {
+    font-size: 2rem;
+}
+
+.statGrid {
+    margin-bottom: 24px;
+}
+
+.statCard {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.statIcon {
+    font-size: 2rem;
+}
+
+.statVal {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #f0f4ff;
+}
+
+.charts {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+    .charts {
+        grid-template-columns: 1fr;
+    }
+}
+
+.donutWrap {
+    max-width: 280px;
+    margin: 0 auto;
+}
+
+.tableCard {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    color: #8896b3;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.catDot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.amount {
+    font-weight: 600;
+    color: #f0f4ff;
+}
+
+.bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+    overflow: hidden;
+    min-width: 80px;
+}
+
+.barFill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
