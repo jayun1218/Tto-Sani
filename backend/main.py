@@ -13,6 +13,7 @@ import models.expense  # 모델 임포트로 테이블 생성 트리거
 from routers.expenses import router as expenses_router
 from routers.analysis import router as analysis_router
 from routers.gamification import router as gamification_router
+from routers.native import router as native_router
 
 load_dotenv()
 
@@ -38,6 +39,7 @@ app.add_middleware(
 app.include_router(expenses_router)
 app.include_router(analysis_router)
 app.include_router(gamification_router)
+app.include_router(native_router)
 
 
 @app.get("/")

@@ -90,12 +90,101 @@ def detect_impulse(expenses: List[Expense]) -> Dict[str, Any]:
                 "reason": f"평균 지출({round(avg_amount,0)}원)의 {round(exp.amount/avg_amount,1)}배 지출",
             })
 
-    total_impulse = sum(i["amount"] for i in impulse_items) + sum(
-        w["amount"] for w in warnings
-    )
-
     return {
         "warnings": warnings,
         "impulse_items": impulse_items,
         "total_impulse_amount": round(total_impulse, 0),
     }
+
+
+import calendar
+from datetime import date
+
+def predict_spending(current_expenses: List[Expense]) -> Dict[str, Any]:
+    """현재까지의 소비 속도를 기반으로 이번 달 말 총 지출을 예측한다."""
+    if not current_expenses:
+        return {"predicted_total": 0, "status": "no_data"}
+
+    today = date.today()
+    days_in_month = calendar.monthrange(today.year, today.month)[1]
+    elapsed_days = today.day
+
+    current_total = sum(e.amount for e in current_expenses)
+    daily_avg = current_total / elapsed_days
+    predicted_total = daily_avg * days_in_month
+
+    status = "normal"
+    if predicted_total > 1000000: # 예시 기준: 100만원 초과 시 주의
+        status = "warning"
+    
+    return {
+        "current_total": round(current_total, 0),
+        "predicted_total": round(predicted_total, 0),
+        "days_remaining": days_in_month - elapsed_days,
+        "daily_avg": round(daily_avg, 0),
+        "status": status
+    }
+
+
+def watchdog_analysis(current_expenses: List[Expense], past_expenses: List[Expense]) -> List[Dict[str, Any]]:
+    """과거 평균 대비 이번 달 급증한 카테고리를 탐지한다."""
+    if not current_expenses or not past_expenses:
+        return []
+
+    # 과거 카테고리별 평균 (간단히 총액 / 3개월 가정)
+    past_cat_total: Dict[str, float] = defaultdict(float)
+    for exp in past_expenses:
+        past_cat_total[exp.category] += exp.amount
+    
+    past_avg = {cat: amt / 3 for cat, amt in past_cat_total.items()}
+
+    # 이번 달 카테고리별 지출
+    current_cat_total: Dict[str, float] = defaultdict(float)
+    for exp in current_expenses:
+        current_cat_total[exp.category] += exp.amount
+
+    alerts = []
+    for cat, current_amt in current_cat_total.items():
+        avg = past_avg.get(cat, 0)
+        if avg > 0 and current_amt > avg * 1.5: # 50% 이상 증가 시
+            alerts.append({
+                "category": cat,
+                "current_amount": round(current_amt, 0),
+                "past_average": round(avg, 0),
+                "increase_ratio": round((current_amt / avg - 1) * 100, 1),
+                "message": f"{cat} 지출이 평소보다 {round((current_amt / avg - 1) * 100)}% 급증했습니다!"
+            })
+    
+    return alerts
+
+
+def detect_subscriptions(expenses: List[Expense]) -> List[Dict[str, Any]]:
+    """반복되는 결제 내역을 분석하여 정기 구독을 탐지한다."""
+    if not expenses:
+        return []
+
+    # 가맹점별 빈도 및 금액 분석
+    desc_map = defaultdict(list)
+    for exp in expenses:
+        desc_map[exp.description].append(exp)
+
+    subscriptions = []
+    # 간단한 로직: 한 달 프로젝트 내에서 결제액이 1회더라도 
+    # '네이버', '유튜브', '넷플릭스' 등 특정 키워드 포함 시 구독으로 간주 (V1)
+    # 또는 여러 달 데이터를 볼 수 있다면 더 정확함. 우선 키워드 방식 결합.
+    sub_keywords = ["네이버플러스", "유튜브", "넷플릭스", "쿠팡와우", "Spotify", "디즈니+", "구독", "멤버십"]
+    
+    for desc, exps in desc_map.items():
+        is_sub = any(kw.lower() in desc.lower() for kw in sub_keywords)
+        # 혹은 동일 금액 2회 이상 (같은 달 보다는 기간을 넓게 잡아야 함)
+        
+        if is_sub:
+            total_amt = sum(e.amount for e in exps)
+            subscriptions.append({
+                "description": desc,
+                "amount": round(total_amt / len(exps), 0), # 1회 결제액 기준
+                "count": len(exps),
+                "category": exps[0].category
+            })
+
+    return subscriptions

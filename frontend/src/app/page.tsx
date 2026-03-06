@@ -28,18 +28,31 @@ const PALETTE = [
 interface CategoryItem { category: string; amount: number; ratio: number; }
 interface Summary { total: number; count: number; by_category: CategoryItem[]; }
 
-export default function HomePage() {
+export default function Home() {
     const router = useRouter();
-    const [summary, setSummary] = useState<Summary | null>(null);
+    const [summary, setSummary] = useState<any>(null);
+    const [prediction, setPrediction] = useState<any>(null);
+    const [watchdog, setWatchdog] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+    const formatPrice = (price: number) => {
+        return new Intl.NumberFormat('ko-KR').format(price) + '원';
+    };
+
     const fetchData = async () => {
         try {
-            const res = await axios.get(`${API}/analysis/summary`);
-            setSummary(res.data);
+            const [summaryRes, predictionRes, watchdogRes] = await Promise.all([
+                axios.get(`${API}/analysis/summary`),
+                axios.get(`${API}/analysis/prediction`),
+                axios.get(`${API}/analysis/watchdog`),
+            ]);
+            setSummary(summaryRes.data);
+            setPrediction(predictionRes.data);
+            setWatchdog(watchdogRes.data);
         } catch (err) {
             setError("백엔드 서버에 연결할 수 없습니다.");
+            console.error("Failed to fetch data:", err);
         } finally {
             setLoading(false);
         }
@@ -69,9 +82,9 @@ export default function HomePage() {
     );
 
     const donutData = {
-        labels: summary.by_category.map(c => c.category),
+        labels: summary.by_category.map((c: any) => c.category),
         datasets: [{
-            data: summary.by_category.map(c => c.amount),
+            data: summary.by_category.map((c: any) => c.amount),
             backgroundColor: PALETTE,
             borderWidth: 0,
             hoverOffset: 8,
@@ -79,10 +92,10 @@ export default function HomePage() {
     };
 
     const barData = {
-        labels: summary.by_category.map(c => c.category),
+        labels: summary.by_category.map((c: any) => c.category),
         datasets: [{
             label: "지출(원)",
-            data: summary.by_category.map(c => c.amount),
+            data: summary.by_category.map((c: any) => c.amount),
             backgroundColor: PALETTE,
             borderRadius: 8,
         }],
@@ -100,6 +113,48 @@ export default function HomePage() {
         },
     };
 
+    const topCategory = summary.by_category[0]?.category;
+
+    const getPersona = (category: string) => {
+        switch (category) {
+            case "카페":
+                return {
+                    emoji: "☕",
+                    title: "커피 마니아",
+                    desc: "사용자님의 소비 습관 분석 결과예요",
+                    gradient: "linear-gradient(135deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)"
+                };
+            case "구독":
+                return {
+                    emoji: "🎬",
+                    title: "프로 구독러",
+                    desc: "사용자님의 소비 습관 분석 결과예요",
+                    gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                };
+            case "식비":
+                return {
+                    emoji: "🍱",
+                    title: "진정한 미식가",
+                    desc: "사용자님의 소비 습관 분석 결과예요",
+                    gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
+                };
+            case "쇼핑":
+                return {
+                    emoji: "🛍️",
+                    title: "패션 쇼퍼",
+                    desc: "사용자님의 소비 습관 분석 결과예요",
+                    gradient: "linear-gradient(135deg, #5ee7df 0%, #b490ca 100%)"
+                };
+            default:
+                return {
+                    emoji: "💰",
+                    title: "알뜰 살뜰이",
+                    desc: "사용자님의 소비 습관 분석 결과예요",
+                    gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"
+                };
+        }
+    };
+
     return (
         <div className={styles.page}>
             <div className="container">
@@ -113,52 +168,88 @@ export default function HomePage() {
 
                 {/* 상단 히어로 섹션: 페르소나 카드 & 2x2 그리드 */}
                 <div className={styles.heroSection}>
-                    {/* 좌측: 페르소나 카드 */}
-                    <div className={styles.personaCard} style={{
-                        background: (summary.by_category[0]?.category === "카페" ? "linear-gradient(135deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)" :
-                            summary.by_category[0]?.category === "구독" ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" :
-                                summary.by_category[0]?.category === "식비" ? "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" :
-                                    summary.by_category[0]?.category === "쇼핑" ? "linear-gradient(135deg, #5ee7df 0%, #b490ca 100%)" :
-                                        "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)")
-                    }}>
-                        <div className={styles.personaBadge}>금주의 페르소나</div>
+                    {/* 페르소나 카드 (왼쪽) */}
+                    <div className={styles.personaCard} style={{ background: getPersona(topCategory).gradient }}>
+                        <div className={styles.personaBadge}>이번 달 페르소나</div>
                         <div className={styles.avatarWrap}>
-                            <span className={styles.personaEmoji}>
-                                {summary.by_category[0]?.category === "카페" ? "☕" :
-                                    summary.by_category[0]?.category === "구독" ? "🎬" :
-                                        summary.by_category[0]?.category === "식비" ? "🍱" :
-                                            summary.by_category[0]?.category === "쇼핑" ? "🛍️" : "💰"}
-                            </span>
+                            <div className={styles.personaEmoji}>{getPersona(topCategory).emoji}</div>
                         </div>
                         <div className={styles.personaInfo}>
-                            <h2 className={styles.personaTitle}>
-                                {summary.by_category[0]?.category === "카페" ? "커피 마니아" :
-                                    summary.by_category[0]?.category === "구독" ? "프로 구독러" :
-                                        summary.by_category[0]?.category === "식비" ? "진정한 미식가" :
-                                            summary.by_category[0]?.category === "쇼핑" ? "패션 쇼퍼" : "알뜰 살뜰이"}
-                            </h2>
-                            <p className={styles.personaDesc}>사용자님의 소비 습관 분석 결과예요</p>
+                            <h2>{getPersona(topCategory).title}</h2>
+                            <p className={styles.personaDesc}>{getPersona(topCategory).desc}</p>
                         </div>
                     </div>
 
-                    {/* 우측: 2x2 통계 그리드 */}
+                    {/* 2x2 통계 그리드 (오른쪽) */}
                     <div className={styles.statGrid2x2}>
-                        {[
-                            { label: "총 지출", value: `${summary.total.toLocaleString()}원`, icon: "💸" },
-                            { label: "거래 건수", value: `${summary.count}건`, icon: "📝" },
-                            { label: "주요 카테고리", value: summary.by_category[0]?.category ?? "-", icon: "🏆" },
-                            { label: "최고 지출 비율", value: `${summary.by_category[0]?.ratio ?? 0}%`, icon: "📈" },
-                        ].map(({ label, value, icon }) => (
-                            <div key={label} className={styles.miniStatCard}>
-                                <div className={styles.miniStatHeader}>
-                                    <span className={styles.miniIcon}>{icon}</span>
-                                    <span className={styles.miniLabel}>{label}</span>
-                                </div>
-                                <p className={styles.miniValue}>{value}</p>
+                        <div className={styles.miniStatCard}>
+                            <div className={styles.miniStatHeader}>
+                                <span className={styles.miniIcon}>💰</span>
+                                <span className={styles.miniLabel}>총 지출</span>
                             </div>
-                        ))}
+                            <div className={styles.miniValue}>{formatPrice(summary.total)}</div>
+                        </div>
+
+                        <div className={styles.miniStatCard}>
+                            <div className={styles.miniStatHeader}>
+                                <span className={styles.miniIcon}>📝</span>
+                                <span className={styles.miniLabel}>거래 건수</span>
+                            </div>
+                            <div className={styles.miniValue}>{summary.count}건</div>
+                        </div>
+
+                        <div className={styles.miniStatCard}>
+                            <div className={styles.miniStatHeader}>
+                                <span className={styles.miniIcon}>🏆</span>
+                                <span className={styles.miniLabel}>주요 카테고리</span>
+                            </div>
+                            <div className={styles.miniValue}>{topCategory || '-'}</div>
+                        </div>
+
+                        <div className={styles.miniStatCard}>
+                            <div className={styles.miniStatHeader}>
+                                <span className={styles.miniIcon}>📈</span>
+                                <span className={styles.miniLabel}>최고 지출 비율</span>
+                            </div>
+                            <div className={styles.miniValue}>{summary.by_category[0]?.ratio || 0}%</div>
+                        </div>
                     </div>
                 </div>
+
+                {/* V2 지능형 리포트 섹션 */}
+                {prediction && (
+                    <div className={styles.v2ReportSection}>
+                        <div className={styles.predictionCard}>
+                            <div className={styles.predictInfo}>
+                                <h3>이번 달 예상 총 지출</h3>
+                                <div className={styles.predictValue}>{formatPrice(prediction.predicted_total)}</div>
+                                <div className={`${styles.predictStatus} ${prediction.status === 'warning' ? styles.statusWarning : styles.statusNormal}`}>
+                                    {prediction.status === 'warning' ? '⚠️ 지출 속도가 너무 빨라요!' : '✅ 평소와 비슷한 지출 속도예요.'}
+                                </div>
+                            </div>
+                            <div className={`${styles.miniStatCard} ${styles.predictDetail}`}>
+                                <div className={styles.miniLabel}>남은 기간 동안 하루 평균</div>
+                                <div className={styles.miniValue} style={{ fontSize: '1.2rem' }}>{formatPrice(prediction.daily_avg)}</div>
+                                <div className={styles.miniLabel} style={{ marginTop: '4px' }}>이하로 쓰시면 목표를 지킬 수 있어요!</div>
+                            </div>
+                        </div>
+
+                        {/* 실시간 감시자 알림 */}
+                        {watchdog.length > 0 && (
+                            <div className={styles.watchdogSection}>
+                                {watchdog.map((alert, idx) => (
+                                    <div key={idx} className={styles.watchdogAlert}>
+                                        <span className={styles.alertIcon}>🚨</span>
+                                        <div>
+                                            <strong>{alert.message}</strong>
+                                            <div style={{ fontSize: '0.85rem', opacity: 0.8 }}>평소 평균 {formatPrice(alert.past_average)} 대비 {alert.increase_ratio}% 증가</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 {/* 차트 영역 */}
                 <div className={styles.charts}>
@@ -187,7 +278,7 @@ export default function HomePage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {summary.by_category.map((item, i) => (
+                            {summary.by_category.map((item: any, i: number) => (
                                 <tr key={item.category}>
                                     <td>
                                         <span className={styles.catDot} style={{ background: PALETTE[i % PALETTE.length] }} />
