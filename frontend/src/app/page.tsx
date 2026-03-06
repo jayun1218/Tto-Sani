@@ -74,9 +74,8 @@ export default function Home() {
             <p style={{ fontSize: "3rem" }}>📂</p>
             <h2 className="mt-4">{error || "소비 데이터가 없습니다"}</h2>
             <p className="text-muted mt-2">먼저 지출 내역을 추가하거나 CSV 파일을 업로드해주세요.</p>
-            <div className="mt-6 flex gap-4">
-                <Link href="/add" className="btn btn-primary">직접 추가하기</Link>
-                <Link href="/upload" className="btn btn-outline">CSV 업로드하기</Link>
+            <div className="mt-6">
+                <Link href="/add" className="btn btn-primary" style={{ padding: '12px 32px' }}>소비 내역 추가하러 가기 →</Link>
             </div>
         </div>
     );

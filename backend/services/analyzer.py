@@ -93,7 +93,7 @@ def detect_impulse(expenses: List[Expense]) -> Dict[str, Any]:
     return {
         "warnings": warnings,
         "impulse_items": impulse_items,
-        "total_impulse_amount": round(total_impulse, 0),
+        "total_impulse_amount": round(impulse_total, 0),
     }
 
 

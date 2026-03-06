@@ -55,7 +55,7 @@ export default function InsightsPage() {
         <div className={styles.center}>
             <p style={{ fontSize: "3rem" }}>⚠️</p>
             <h2 className="mt-4">{error}</h2>
-            <Link href="/upload" className="btn btn-primary mt-6">업로드하러 가기 →</Link>
+            <Link href="/add" className="btn btn-primary mt-6">데이터 추가하러 가기 →</Link>
         </div>
     );
 
@@ -151,8 +151,8 @@ export default function InsightsPage() {
                 </div>
 
                 <div className={styles.navBtns}>
-                    <Link href="/dashboard" className="btn btn-secondary">← 대시보드</Link>
-                    <Link href="/upload" className="btn btn-primary">새 파일 분석하기</Link>
+                    <Link href="/" className="btn btn-secondary">← 대시보드</Link>
+                    <Link href="/add" className="btn btn-primary">소비 내역 더 추가하기</Link>
                 </div>
             </div>
         </div>
