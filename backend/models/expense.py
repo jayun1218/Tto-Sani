@@ -35,3 +35,9 @@ class UserProgress(Base):
     attendance_streak = Column(Integer, default=0)  # 연속 출석 일수
     last_attendance_date = Column(Date)
     last_mission_date = Column(Date)
+class AttendanceRecord(Base):
+    __tablename__ = "attendance_records"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(Date, default=datetime.now().date, unique=True) # 하루에 하나만 기록
+    points_earned = Column(Integer, default=100)

@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
 from database import get_db
-from models.expense import Mission, UserProgress
+from models.expense import Mission, UserProgress, AttendanceRecord
 
 router = APIRouter(prefix="/gamification", tags=["gamification"])
 
@@ -99,15 +99,27 @@ def complete_mission(mission_id: int, db: Session = Depends(get_db)):
         "current_exp": progress.current_exp
     }
 
+@router.get("/attendance/history")
+def get_attendance_history(db: Session = Depends(get_db)):
+    from models.expense import AttendanceRecord
+    # 현재 달의 기록만 가져옴
+    today = datetime.now().date()
+    first_day = today.replace(day=1)
+    records = db.query(AttendanceRecord).filter(AttendanceRecord.date >= first_day).all()
+    return [r.date.isoformat() for r in records]
+
 @router.post("/attendance")
 def check_attendance(db: Session = Depends(get_db)):
+    from models.expense import AttendanceRecord
     progress = db.query(UserProgress).first()
     if not progress:
         progress = UserProgress(total_points=0, level=1)
         db.add(progress)
     
     today = datetime.now().date()
-    if progress.last_attendance_date == today:
+    # 이미 오늘 기록이 있는지 확인
+    existing_record = db.query(AttendanceRecord).filter(AttendanceRecord.date == today).first()
+    if existing_record:
         return {"message": "이미 오늘 출석체크를 완료했습니다.", "already_done": True}
     
     # 연속 출석 확인
@@ -135,18 +147,29 @@ def check_attendance(db: Session = Depends(get_db)):
     elif streak == 10:
         reward += 1000
         message += " (10일 연속 보너스 +1000P!)"
-    elif streak >= 30 and streak % 30 == 0:
-        reward += 3000
-        message += " (한 달 연속 보너스 +3000P!)"
+    elif streak == 20:
+        reward += 2000
+        message += " (20일 연속 보너스 +2000P!)"
+    elif streak >= 28 and streak <= 31: # 매달 말일 기준으로 한달 체크는 복잡하므로 30일 근처로 보상 처리
+        # 실제 한달 연속은 streak % 30 == 0 또는 특정 로직 필요
+        if streak == 30:
+            reward += 3000
+            message += " (한 달 연속 보너스 +3000P!)"
     
     progress.total_points += reward
+    
+    # 출석 레코드 생성
+    new_record = AttendanceRecord(date=today, points_earned=reward)
+    db.add(new_record)
+    
     db.commit()
     
     return {
         "message": message,
         "reward": reward,
         "streak": streak,
-        "total_points": progress.total_points
+        "total_points": progress.total_points,
+        "date": today.isoformat()
     }
 
 @router.post("/water")

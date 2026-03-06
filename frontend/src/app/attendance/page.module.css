@@ -1,16 +1,17 @@
 .container {
     min-height: 100vh;
-    background: white;
+    background: #f8fbff;
     display: flex;
     flex-direction: column;
-    padding: 80px 1.5rem 2rem;
-    /* 상단 여백 80px로 확대 */
-    font-family: 'Inter', sans-serif;
+    padding: 100px 1.5rem 6rem;
+    font-family: 'Pretendard', sans-serif;
 }
 
 @media (min-width: 769px) {
     .container {
-        padding-top: 64px;
+        padding-top: 100px;
+        max-width: 500px;
+        margin: 0 auto;
     }
 }
 
@@ -22,103 +23,202 @@
 }
 
 .backButton {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
     cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 800;
     color: #1e293b;
 }
 
 .streakSection {
-    background: #f8fafc;
-    border-radius: 1.5rem;
-    padding: 2rem;
     text-align: center;
-    margin-bottom: 2rem;
-}
-
-.streakCount {
-    font-size: 3.5rem;
-    font-weight: 900;
-    color: #ef4444;
-    margin: 0;
-}
-
-.streakLabel {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #64748b;
-}
-
-.attendanceGrid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 0.5rem;
     margin-bottom: 2.5rem;
 }
 
-.dayItem {
-    aspect-ratio: 1;
-    background: #f1f5f9;
-    border-radius: 0.75rem;
+.streakCircle {
+    width: 140px;
+    height: 140px;
+    background: white;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
-    position: relative;
+    box-shadow: 0 10px 30px rgba(79, 142, 247, 0.15);
+    border: 4px solid #4f8ef7;
 }
 
-.dayItem.checked {
-    background: #dcfce7;
-    color: #166534;
+.streakCount {
+    font-size: 3rem;
+    font-weight: 900;
+    color: #4f8ef7;
+    margin: 0;
+    line-height: 1;
 }
 
-.checkIcon {
-    font-size: 1.25rem;
+.streakLabel {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-top: 4px;
 }
 
-.bonusInfo {
-    background: #eff6ff;
-    border-radius: 1rem;
-    padding: 1.25rem;
+.streakSubText {
+    font-size: 0.95rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.calendarContainer {
+    background: white;
+    border-radius: 24px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     margin-bottom: 2rem;
 }
 
-.bonusTitle {
-    font-weight: 700;
-    color: #1e40af;
-    display: block;
-    margin-bottom: 0.5rem;
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 0.5rem;
 }
 
-.bonusList {
+.weekday {
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #94a3b8;
+}
+
+.calendarGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px 8px;
+}
+
+.calendarDay {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 0.9rem;
-    color: #3b82f6;
-    margin: 0;
-    padding-left: 1.2rem;
+    font-weight: 600;
+    color: #64748b;
+    border-radius: 12px;
+    position: relative;
+    cursor: default;
+}
+
+.calendarDay.today {
+    background: #f1f5f9;
+    color: #1e293b;
+    font-weight: 800;
+}
+
+.calendarDay.checked {
+    color: transparent;
+}
+
+.calendarDay.empty {
+    visibility: hidden;
+}
+
+.stamp {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    background: #4f8ef7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.stampIcon {
+    font-size: 1rem;
+}
+
+@keyframes popIn {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.rewardInfo {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 2.5rem;
+}
+
+.rewardItem {
+    flex: 1;
+    background: #fff;
+    padding: 1rem 0.5rem;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    border: 1px solid #f1f5f9;
+}
+
+.rewardTitle {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.rewardValue {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #4f8ef7;
 }
 
 .checkButton {
     width: 100%;
-    padding: 1.25rem;
-    border-radius: 1rem;
+    padding: 1.15rem;
+    border-radius: 18px;
     border: none;
-    background: #3b82f6;
+    background: #4f8ef7;
     color: white;
     font-size: 1.1rem;
     font-weight: 800;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 8px 20px rgba(79, 142, 247, 0.3);
+    transition: all 0.2s ease;
 }
 
-.checkButton:disabled {
-    background: #cbd5e1;
+.checkButton:active {
+    transform: scale(0.98);
+}
+
+.checkButton.done {
+    background: #e2e8f0;
+    color: #94a3b8;
     box-shadow: none;
     cursor: default;
 }
