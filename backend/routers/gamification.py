@@ -79,19 +79,48 @@ WATER_COST = 50
 SUPPLEMENT_EXP = 50
 SUPPLEMENT_COST = 200
 
+import random
+
+MISSION_POOL = [
+    {"title": "오늘 카페 가지 않기", "description": "커피 대신 텀블러를 사용해보세요!", "points": 15},
+    {"title": "무지출 챌린지", "description": "오늘 하루 지출 0원에 도전하세요!", "points": 50},
+    {"title": "편의점 유혹 이기기", "description": "편의점 대신 집밥을 먹어보세요!", "points": 20},
+    {"title": "배달 대신 요리하기", "description": "배달료를 아끼고 직접 요리해봐요.", "points": 30},
+    {"title": "중고 거래 앱 안보기", "description": "필요 없는 물건 구경을 멈춰보세요.", "points": 15},
+    {"title": "장바구니 비우기", "description": "충동적으로 담아둔 물건을 비워보세요.", "points": 20},
+    {"title": "대중교통 이용하기", "description": "택시 대신 버스나 지하철을 타보세요.", "points": 25},
+    {"title": "마라탕/치킨 참기", "description": "오늘 밤 야식의 유혹을 참아보세요.", "points": 30},
+    {"title": "물 2리터 마시기", "description": "건강도 챙기고 돈도 아끼는 물 마시기!", "points": 15},
+    {"title": "소비 일기 작성하기", "description": "오늘의 소비를 한 줄로 기록해보세요.", "points": 10},
+    {"title": "1만보 걷기", "description": "돈도 아끼고 건강도 챙기는 걷기 운동!", "points": 20},
+    {"title": "도서관 방문하기", "description": "책을 사는 대신 빌려 읽어보세요.", "points": 25},
+    {"title": "중고 물품 판매하기", "description": "안 쓰는 물건을 팔아 수익을 내보세요.", "points": 40},
+    {"title": "OTT 하나 해지하기", "description": "안 보는 구독 서비스를 정리해보세요.", "points": 50},
+    {"title": "자판기 음료 참기", "description": "목마를 땐 미리 챙긴 물을 마셔요.", "points": 10},
+    {"title": "마트 대신 냉장고 파먹기", "description": "냉장고 속 재료로 맛있는 한 끼!", "points": 30},
+    {"title": "취미 생활 즐기기", "description": "돈 안 드는 취미로 하루를 채워보세요.", "points": 20},
+    {"title": "가계부 정산하기", "description": "이번 주 지출을 꼼꼼히 체크해보세요.", "points": 15},
+    {"title": "명상 5분 하기", "description": "마음이 안정되면 지출 욕구도 줄어들어요.", "points": 10},
+    {"title": "나를 위한 저축", "description": "아낀 돈을 별도 계좌에 저금해보세요.", "points": 25}
+]
+
 @router.get("/missions", response_model=List[MissionOut])
 def get_daily_missions(db: Session = Depends(get_db)):
     today = datetime.now().date()
     missions = db.query(Mission).filter(Mission.date == today).all()
     
-    # 미션이 없으면 기본 미션 생성
+    # 미션이 없으면 랜덤 미션 생성
     if not missions:
-        default_missions = [
-            Mission(title="오늘 카페 가지 않기", description="커피 대신 텀블러를 사용해보세요!", points=15, date=today),
-            Mission(title="무지출 챌린지", description="오늘 하루 지출 0원에 도전하세요!", points=30, date=today),
-            Mission(title="편의점 유혹 이기기", description="편의점 대신 집밥을 먹어보세요!", points=20, date=today)
+        selected_missions = random.sample(MISSION_POOL, 3)
+        new_missions = [
+            Mission(
+                title=m["title"], 
+                description=m["description"], 
+                points=m["points"], 
+                date=today
+            ) for m in selected_missions
         ]
-        db.add_all(default_missions)
+        db.add_all(new_missions)
         db.commit()
         missions = db.query(Mission).filter(Mission.date == today).all()
         
