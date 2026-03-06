@@ -238,4 +238,4 @@ def analyze_budgets(current_expenses: List[Expense], budgets: List[Any]) -> List
             "status": status
         })
     
-    return budget_reports
+    return [r for r in budget_reports if r["category"] != "TOTAL"]

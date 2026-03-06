@@ -24,9 +24,9 @@ def get_native_summary(db: Session = Depends(get_db)):
     progress = db.query(UserProgress).first()
     points = progress.total_points if progress else 0
     
-    # 예산 정보 요약
-    budget_total = db.query(Budget).with_entities(Budget.amount).all()
-    total_budget = sum(b[0] for b in budget_total)
+    # 예산 정보 요약 (모든 카테고리 예산의 합계)
+    budget_sums = db.query(Budget).filter(Budget.category != "TOTAL").with_entities(Budget.amount).all()
+    total_budget = sum(b[0] for b in budget_sums)
     
     remaining = total_budget - total if total_budget > 0 else 0
     
