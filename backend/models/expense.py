@@ -41,3 +41,12 @@ class AttendanceRecord(Base):
     id = Column(Integer, primary_key=True, index=True)
     date = Column(Date, default=datetime.now().date, unique=True) # 하루에 하나만 기록
     points_earned = Column(Integer, default=100)
+
+
+class StepRecord(Base):
+    __tablename__ = "step_records"
+
+    id = Column(Integer, primary_key=True, index=True)
+    date = Column(Date, default=datetime.now().date, unique=True) # 일일 걸음수 기록
+    step_count = Column(Integer, default=0)                         # 실제 걸음수
+    points_earned = Column(Integer, default=0)                      # 지급된 포인트 (보상 여부)

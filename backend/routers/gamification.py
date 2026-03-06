@@ -5,9 +5,45 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
 from database import get_db
-from models.expense import Mission, UserProgress, AttendanceRecord
+from models.expense import Mission, UserProgress, AttendanceRecord, StepRecord
 
 router = APIRouter(prefix="/gamification", tags=["gamification"])
+
+class StepSync(BaseModel):
+    steps: int
+
+@router.post("/steps/sync")
+def sync_steps(data: StepSync, db: Session = Depends(get_db)):
+    progress = db.query(UserProgress).first()
+    if not progress:
+        progress = UserProgress(total_points=0, level=1)
+        db.add(progress)
+    
+    today = datetime.now().date()
+    record = db.query(StepRecord).filter(StepRecord.date == today).first()
+    
+    if not record:
+        record = StepRecord(date=today, step_count=data.steps, points_earned=0)
+        db.add(record)
+    else:
+        record.step_count = data.steps
+    
+    reward_granted = False
+    # 보상 기준: 10,000보 달성 시 100P 지급 (하루 한 번)
+    if record.step_count >= 10000 and record.points_earned == 0:
+        record.points_earned = 100
+        progress.total_points += 100
+        reward_granted = True
+        
+    db.commit()
+    db.refresh(progress)
+    
+    return {
+        "message": "걸음수가 동기화되었습니다." if not reward_granted else "축하합니다! 10,000보 달성 보상 100P가 지급되었습니다.",
+        "today_steps": record.step_count,
+        "total_points": progress.total_points,
+        "reward_granted": reward_granted
+    }
 
 class MissionOut(BaseModel):
     id: int
