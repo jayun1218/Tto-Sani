@@ -40,7 +40,7 @@ export default function MissionsPage() {
                 axios.get(`${API_URL}/gamification/progress`)
             ]);
             setMissions(missionsRes.data);
-            setPoints(progressRes.data.points);
+            setPoints(progressRes.data.total_points);
             setLevel(progressRes.data.level);
         } catch (error) {
             console.error('Data loading failed:', error);
@@ -55,7 +55,7 @@ export default function MissionsPage() {
 
     const handleComplete = async (missionId: number) => {
         try {
-            await axios.post(`${API_URL}/gamification/complete/${missionId}`);
+            await axios.post(`${API_URL}/gamification/missions/${missionId}/complete`);
             fetchData(); // Refresh data after completion
         } catch (error) {
             console.error('Mission completion failed:', error);

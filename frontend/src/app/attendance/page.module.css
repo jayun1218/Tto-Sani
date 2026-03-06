@@ -3,7 +3,8 @@
     background: white;
     display: flex;
     flex-direction: column;
-    padding: 1rem 1.5rem;
+    padding: 80px 1.5rem 2rem;
+    /* 상단 여백 80px로 확대 */
     font-family: 'Inter', sans-serif;
 }
 
