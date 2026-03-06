@@ -40,7 +40,7 @@ export default function Navbar() {
         <nav className={styles.nav}>
             <div className={styles.inner}>
                 <Link href="/" className={styles.logo}>
-                    <span className={styles.logoEmoji}>💰</span>
+                    <img src="/icons/logo.png" alt="또사니" className={styles.logoImage} style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
                     <span className={styles.logoText}>
                         또<span className={styles.logoAccent}>사니</span>
                     </span>
