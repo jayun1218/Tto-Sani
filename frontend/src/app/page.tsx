@@ -111,20 +111,53 @@ export default function HomePage() {
                     <Link href="/insights" className="btn btn-primary">절약 전략 보기 →</Link>
                 </div>
 
-                {/* 통계 카드 */}
-                <div className={`grid-4 ${styles.statGrid}`}>
-                    {[
-                        { label: "총 지출", value: `${summary.total.toLocaleString()}원`, icon: "💸" },
-                        { label: "거래 건수", value: `${summary.count}건`, icon: "📝" },
-                        { label: "주요 카테고리", value: summary.by_category[0]?.category ?? "-", icon: "🏆" },
-                        { label: "최고 지출 비율", value: `${summary.by_category[0]?.ratio ?? 0}%`, icon: "📈" },
-                    ].map(({ label, value, icon }) => (
-                        <div key={label} className={`card ${styles.statCard}`}>
-                            <span className={styles.statIcon}>{icon}</span>
-                            <p className="text-sm text-muted">{label}</p>
-                            <p className={styles.statVal}>{value}</p>
+                {/* 상단 히어로 섹션: 페르소나 카드 & 2x2 그리드 */}
+                <div className={styles.heroSection}>
+                    {/* 좌측: 페르소나 카드 */}
+                    <div className={styles.personaCard} style={{
+                        background: (summary.by_category[0]?.category === "카페" ? "linear-gradient(135deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)" :
+                            summary.by_category[0]?.category === "구독" ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" :
+                                summary.by_category[0]?.category === "식비" ? "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)" :
+                                    summary.by_category[0]?.category === "쇼핑" ? "linear-gradient(135deg, #5ee7df 0%, #b490ca 100%)" :
+                                        "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)")
+                    }}>
+                        <div className={styles.personaBadge}>금주의 페르소나</div>
+                        <div className={styles.avatarWrap}>
+                            <span className={styles.personaEmoji}>
+                                {summary.by_category[0]?.category === "카페" ? "☕" :
+                                    summary.by_category[0]?.category === "구독" ? "🎬" :
+                                        summary.by_category[0]?.category === "식비" ? "🍱" :
+                                            summary.by_category[0]?.category === "쇼핑" ? "🛍️" : "💰"}
+                            </span>
                         </div>
-                    ))}
+                        <div className={styles.personaInfo}>
+                            <h2 className={styles.personaTitle}>
+                                {summary.by_category[0]?.category === "카페" ? "커피 마니아" :
+                                    summary.by_category[0]?.category === "구독" ? "프로 구독러" :
+                                        summary.by_category[0]?.category === "식비" ? "진정한 미식가" :
+                                            summary.by_category[0]?.category === "쇼핑" ? "패션 쇼퍼" : "알뜰 살뜰이"}
+                            </h2>
+                            <p className={styles.personaDesc}>사용자님의 소비 습관 분석 결과예요</p>
+                        </div>
+                    </div>
+
+                    {/* 우측: 2x2 통계 그리드 */}
+                    <div className={styles.statGrid2x2}>
+                        {[
+                            { label: "총 지출", value: `${summary.total.toLocaleString()}원`, icon: "💸" },
+                            { label: "거래 건수", value: `${summary.count}건`, icon: "📝" },
+                            { label: "주요 카테고리", value: summary.by_category[0]?.category ?? "-", icon: "🏆" },
+                            { label: "최고 지출 비율", value: `${summary.by_category[0]?.ratio ?? 0}%`, icon: "📈" },
+                        ].map(({ label, value, icon }) => (
+                            <div key={label} className={styles.miniStatCard}>
+                                <div className={styles.miniStatHeader}>
+                                    <span className={styles.miniIcon}>{icon}</span>
+                                    <span className={styles.miniLabel}>{label}</span>
+                                </div>
+                                <p className={styles.miniValue}>{value}</p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 {/* 차트 영역 */}
