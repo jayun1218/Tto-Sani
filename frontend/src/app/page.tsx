@@ -106,7 +106,7 @@ export default function HomePage() {
                 <div className={styles.header}>
                     <div>
                         <span className="badge badge-purple">📊 소비 분석</span>
-                        <h1 className="mt-2">이번 달 소비 현황</h1>
+                        <h1 className="mt-2">{new Date().getMonth() + 1}월 소비 현황</h1>
                     </div>
                     <Link href="/insights" className="btn btn-primary">절약 전략 보기 →</Link>
                 </div>
