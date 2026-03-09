@@ -1,6 +1,13 @@
 .page {
-    padding: 100px 0 100px;
     min-height: 100vh;
+    padding: calc(env(safe-area-inset-top) + 60px) 1.5rem calc(env(safe-area-inset-bottom) + 100px);
+    background-color: var(--bg-primary);
+}
+
+@media (min-width: 769px) {
+    .page {
+        padding-top: 110px;
+    }
 }
 
 .header {

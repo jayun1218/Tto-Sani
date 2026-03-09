@@ -3,13 +3,13 @@
     background: #f8fbff;
     display: flex;
     flex-direction: column;
-    padding: calc(env(safe-area-inset-top) + 50px) 1.5rem calc(env(safe-area-inset-bottom) + 100px);
+    padding: calc(env(safe-area-inset-top) + 60px) 1.5rem calc(env(safe-area-inset-bottom) + 60px);
     font-family: 'Pretendard', sans-serif;
 }
 
 @media (min-width: 769px) {
     .container {
-        padding-top: 100px;
+        padding-top: 110px;
         max-width: 500px;
         margin: 0 auto;
     }
