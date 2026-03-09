@@ -4,6 +4,10 @@
 "또 사니?"라는 질문에서 시작된, 당신의 소비를 바꾸는 가장 즐거운 방법.
 단순한 기록을 넘어 AI가 당신의 소비 페르소나를 찾고, 돈나무를 키우며 즐겁게 자산을 관리하세요.
 
+### 🌐 서비스 바로가기
+- **Web App**: [https://tto-sani.vercel.app/](https://tto-sani.vercel.app/)
+- **API Server**: [https://tto-sani.onrender.com/](https://tto-sani.onrender.com/)
+
 ---
 
 ## ✨ 핵심 기능 (Features)
@@ -41,8 +45,8 @@
 - **Visualization**: Chart.js, react-chartjs-2
 
 ### Backend
-- **Framework**: FastAPI (Python)
-- **Database**: SQLite (SQLAlchemy ORM)
+- **Framework**: FastAPI (Python 3.11)
+- **Database**: PostgreSQL (Supabase) + SQLAlchemy ORM
 - **Data Analysis**: Pandas, Numpy
 - **AI Integrations**: OpenAI GPT-4o (Vision/Chat) / Gemini Pro / AI 3D Image Rendering
 
