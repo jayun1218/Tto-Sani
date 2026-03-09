@@ -1,6 +1,6 @@
 .page {
     min-height: 100vh;
-    padding: calc(env(safe-area-inset-top) + 20px) 0 calc(env(safe-area-inset-bottom) + 100px);
+    padding: calc(env(safe-area-inset-top) + 50px) 0 calc(env(safe-area-inset-bottom) + 100px);
     background-color: var(--bg-primary);
 }
 
