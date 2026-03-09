@@ -5,10 +5,10 @@ import styles from "./BottomNav.module.css";
 
 const NAV_ITEMS = [
     { href: "/", label: "홈", icon: "🏠" },
-    { href: "/dashboard", label: "분석", icon: "📊" },
+    { href: "/tree", label: "돈나무", icon: "🌳" },
     { href: "/add", label: "추가", icon: "➕", isCenter: true },
-    { href: "/insights", label: "전략", icon: "💡" },
-    { href: "/upload", label: "업로드", icon: "📂" },
+    { href: "/missions", label: "미션", icon: "🎯" },
+    { href: "/attendance", label: "출석", icon: "📅" },
 ];
 
 export default function BottomNav() {
