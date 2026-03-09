@@ -73,16 +73,6 @@ export default function Home() {
         </div>
     );
 
-    if (error || !summary || summary.count === 0) return (
-        <div className={styles.center}>
-            <p style={{ fontSize: "3rem" }}>📂</p>
-            <h2 className="mt-4">{error || "소비 데이터가 없습니다"}</h2>
-            <p className="text-muted mt-2">먼저 지출 내역을 추가하거나 CSV 파일을 업로드해주세요.</p>
-            <div className="mt-6">
-                <Link href="/add" className="btn btn-primary" style={{ padding: '12px 32px' }}>소비 내역 추가하러 가기 →</Link>
-            </div>
-        </div>
-    );
 
     const donutData = {
         labels: summary.by_category.map((c: any) => c.category),
@@ -171,59 +161,91 @@ export default function Home() {
                 </div>
 
                 {/* 상단 히어로 섹션: 페르소나 카드 & 2x2 그리드 */}
-                <div className={styles.heroSection}>
-                    {/* 페르소나 카드 (왼쪽) */}
-                    <div className={styles.personaCard} style={{ background: getPersona(topCategory).gradient }}>
-                        <div className={styles.personaBadge}>이번 달 페르소나</div>
-                        <div className={styles.avatarWrap}>
-                            <div className={styles.personaEmoji}>
-                                {persona?.persona === "지름신 부엉이" ? "🦉" :
-                                    persona?.persona === "카페인 중독 고양이" ? "🐱" :
-                                        persona?.persona === "미식가 강아지" ? "🐶" :
-                                            persona?.persona === "트렌드세터 여우" ? "🦊" :
-                                                persona?.persona === "철벽 다람쥐" ? "🐿️" :
-                                                    persona?.persona === "성실한 나무지기" ? "👨‍🌾" : "🌱"}
+                {(summary && summary.count > 0) ? (
+                    <div className={styles.heroSection}>
+                        {/* 페르소나 카드 (왼쪽) */}
+                        <div className={styles.personaCard} style={{ background: getPersona(topCategory).gradient }}>
+                            <div className={styles.personaBadge}>이번 달 페르소나</div>
+                            <div className={styles.avatarWrap}>
+                                <div className={styles.personaEmoji}>
+                                    {persona?.persona === "지름신 부엉이" ? "🦉" :
+                                        persona?.persona === "카페인 중독 고양이" ? "🐱" :
+                                            persona?.persona === "미식가 강아지" ? "🐶" :
+                                                persona?.persona === "트렌드세터 여우" ? "🦊" :
+                                                    persona?.persona === "철벽 다람쥐" ? "🐿️" :
+                                                        persona?.persona === "성실한 나무지기" ? "👨‍🌾" : "🌱"}
+                                </div>
+                            </div>
+                            <div className={styles.personaInfo}>
+                                <h2>{persona?.persona || "평범한 새싹"}</h2>
+                                <p className={styles.personaDesc}>{persona?.message || "기록을 시작해볼까요?"}</p>
                             </div>
                         </div>
-                        <div className={styles.personaInfo}>
-                            <h2>{persona?.persona || "평범한 새싹"}</h2>
-                            <p className={styles.personaDesc}>{persona?.message || "기록을 시작해볼까요?"}</p>
+
+                        {/* 2x2 통계 그리드 (오른쪽) */}
+                        <div className={styles.statGrid2x2}>
+                            <div className={styles.miniStatCard}>
+                                <div className={styles.miniStatHeader}>
+                                    <span className={styles.miniIcon}>💰</span>
+                                    <span className={styles.miniLabel}>총 지출</span>
+                                </div>
+                                <div className={styles.miniValue}>{formatPrice(summary.total)}</div>
+                            </div>
+
+                            <div className={styles.miniStatCard}>
+                                <div className={styles.miniStatHeader}>
+                                    <span className={styles.miniIcon}>📝</span>
+                                    <span className={styles.miniLabel}>거래 건수</span>
+                                </div>
+                                <div className={styles.miniValue}>{summary.count}건</div>
+                            </div>
+
+                            <div className={styles.miniStatCard}>
+                                <div className={styles.miniStatHeader}>
+                                    <span className={styles.miniIcon}>🏆</span>
+                                    <span className={styles.miniLabel}>주요 카테고리</span>
+                                </div>
+                                <div className={styles.miniValue}>{topCategory || '-'}</div>
+                            </div>
+
+                            <div className={styles.miniStatCard}>
+                                <div className={styles.miniStatHeader}>
+                                    <span className={styles.miniIcon}>📈</span>
+                                    <span className={styles.miniLabel}>최고 지출 비율</span>
+                                </div>
+                                <div className={styles.miniValue}>{summary.by_category[0]?.ratio || 0}%</div>
+                            </div>
                         </div>
                     </div>
-
-                    {/* 2x2 통계 그리드 (오른쪽) */}
-                    <div className={styles.statGrid2x2}>
-                        <div className={styles.miniStatCard}>
-                            <div className={styles.miniStatHeader}>
-                                <span className={styles.miniIcon}>💰</span>
-                                <span className={styles.miniLabel}>총 지출</span>
-                            </div>
-                            <div className={styles.miniValue}>{formatPrice(summary.total)}</div>
+                ) : (
+                    <div className="card" style={{ padding: '60px 20px', textAlign: 'center', marginBottom: '32px' }}>
+                        <p style={{ fontSize: "3rem" }}>📂</p>
+                        <h2 className="mt-4">소비 데이터가 없습니다</h2>
+                        <p className="text-muted mt-2">지출 내역을 추가하시면 AI 분석 리포트가 생성됩니다.</p>
+                        <div className="mt-6">
+                            <Link href="/add" className="btn btn-primary" style={{ padding: '12px 32px' }}>소비 내역 추가하기 →</Link>
                         </div>
+                    </div>
+                )}
 
-                        <div className={styles.miniStatCard}>
-                            <div className={styles.miniStatHeader}>
-                                <span className={styles.miniIcon}>📝</span>
-                                <span className={styles.miniLabel}>거래 건수</span>
-                            </div>
-                            <div className={styles.miniValue}>{summary.count}건</div>
-                        </div>
-
-                        <div className={styles.miniStatCard}>
-                            <div className={styles.miniStatHeader}>
-                                <span className={styles.miniIcon}>🏆</span>
-                                <span className={styles.miniLabel}>주요 카테고리</span>
-                            </div>
-                            <div className={styles.miniValue}>{topCategory || '-'}</div>
-                        </div>
-
-                        <div className={styles.miniStatCard}>
-                            <div className={styles.miniStatHeader}>
-                                <span className={styles.miniIcon}>📈</span>
-                                <span className={styles.miniLabel}>최고 지출 비율</span>
-                            </div>
-                            <div className={styles.miniValue}>{summary.by_category[0]?.ratio || 0}%</div>
-                        </div>
+                {/* 추가 메뉴 섹션: 데이터 유무와 상관없이 항상 노출 */}
+                <div className={styles.serviceSection}>
+                    <div className={styles.sectionHeader}>
+                        <h3>주요 서비스</h3>
+                    </div>
+                    <div className={styles.serviceGrid}>
+                        <Link href="/budgets" className={styles.serviceCard}>
+                            <span className={styles.serviceIcon}>💰</span>
+                            <span className={styles.serviceLabel}>예산 설정</span>
+                        </Link>
+                        <Link href="/dashboard" className={styles.serviceCard}>
+                            <span className={styles.serviceIcon}>📊</span>
+                            <span className={styles.serviceLabel}>상세 분석</span>
+                        </Link>
+                        <Link href="/subscriptions" className={styles.serviceCard}>
+                            <span className={styles.serviceIcon}>🎬</span>
+                            <span className={styles.serviceLabel}>구독 관리</span>
+                        </Link>
                     </div>
                 </div>
 
@@ -262,54 +284,57 @@ export default function Home() {
                     </div>
                 )}
 
-                {/* 차트 영역 */}
-                <div className={styles.charts}>
-                    <div className="card">
-                        <h3 className="mb-4">카테고리별 소비 비율</h3>
-                        <div className={styles.donutWrap}>
-                            <Doughnut data={donutData} options={{ ...chartOpts, cutout: "65%" }} />
+                {/* 차트 & 테이블 영역: 데이터가 있을 때만 노출 */}
+                {summary && summary.count > 0 && (
+                    <>
+                        <div className={styles.charts}>
+                            <div className="card">
+                                <h3 className="mb-4">카테고리별 소비 비율</h3>
+                                <div className={styles.donutWrap}>
+                                    <Doughnut data={donutData} options={{ ...chartOpts, cutout: "65%" }} />
+                                </div>
+                            </div>
+                            <div className="card">
+                                <h3 className="mb-4">카테고리별 지출 금액</h3>
+                                <Bar data={barData} options={barOpts as any} />
+                            </div>
                         </div>
-                    </div>
-                    <div className="card">
-                        <h3 className="mb-4">카테고리별 지출 금액</h3>
-                        <Bar data={barData} options={barOpts as any} />
-                    </div>
-                </div>
 
-                {/* 테이블 */}
-                <div className={`card ${styles.tableCard}`}>
-                    <h3 className="mb-4">카테고리별 상세 내역</h3>
-                    <table className={styles.table}>
-                        <thead>
-                            <tr>
-                                <th>카테고리</th>
-                                <th>지출 금액</th>
-                                <th>비율</th>
-                                <th>비중</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {summary.by_category.map((item: any, i: number) => (
-                                <tr key={item.category}>
-                                    <td>
-                                        <span className={styles.catDot} style={{ background: PALETTE[i % PALETTE.length] }} />
-                                        {item.category}
-                                    </td>
-                                    <td className={styles.amount}>{item.amount.toLocaleString()}원</td>
-                                    <td>{item.ratio}%</td>
-                                    <td>
-                                        <div className={styles.bar}>
-                                            <div
-                                                className={styles.barFill}
-                                                style={{ width: `${item.ratio}%`, background: PALETTE[i % PALETTE.length] }}
-                                            />
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                        <div className={`card ${styles.tableCard}`}>
+                            <h3 className="mb-4">카테고리별 상세 내역</h3>
+                            <table className={styles.table}>
+                                <thead>
+                                    <tr>
+                                        <th>카테고리</th>
+                                        <th>지출 금액</th>
+                                        <th>비율</th>
+                                        <th>비중</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {summary.by_category.map((item: any, i: number) => (
+                                        <tr key={item.category}>
+                                            <td>
+                                                <span className={styles.catDot} style={{ background: PALETTE[i % PALETTE.length] }} />
+                                                {item.category}
+                                            </td>
+                                            <td className={styles.amount}>{item.amount.toLocaleString()}원</td>
+                                            <td>{item.ratio}%</td>
+                                            <td>
+                                                <div className={styles.bar}>
+                                                    <div
+                                                        className={styles.barFill}
+                                                        style={{ width: `${item.ratio}%`, background: PALETTE[i % PALETTE.length] }}
+                                                    />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );
