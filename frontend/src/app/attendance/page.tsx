@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { API_URL } from "@/lib/constants";
 import styles from './page.module.css';
 
 export default function AttendancePage() {
@@ -13,7 +14,6 @@ export default function AttendancePage() {
     const [loading, setLoading] = useState(true);
     const [currentDate, setCurrentDate] = useState(new Date());
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
     const fetchData = async () => {
         try {

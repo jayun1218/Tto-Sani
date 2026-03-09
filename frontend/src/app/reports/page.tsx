@@ -17,7 +17,7 @@ import { Bar, Line } from "react-chartjs-2";
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, PointElement, LineElement);
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+import { API_URL as API } from "@/lib/constants";
 
 export default function ReportsPage() {
     const [trends, setTrends] = useState<any>(null);

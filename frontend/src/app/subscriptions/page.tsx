@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_URL } from "@/lib/constants";
 import styles from '../page.module.css';
 
 export default function SubscriptionsPage() {
@@ -15,7 +16,7 @@ export default function SubscriptionsPage() {
     useEffect(() => {
         const fetchSubs = async () => {
             try {
-                const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/analysis/subscriptions`);
+                const res = await axios.get(`${API_URL}/analysis/subscriptions`);
                 setSubs(res.data);
             } catch (error) {
                 console.error("구독 내역 로딩 실패:", error);

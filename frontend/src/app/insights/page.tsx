@@ -4,7 +4,7 @@ import axios from "axios";
 import styles from "./page.module.css";
 import Link from "next/link";
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+import { API_URL as API } from "@/lib/constants";
 
 interface Warning {
     type: string;

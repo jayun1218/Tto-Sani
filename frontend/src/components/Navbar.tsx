@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { API_URL } from "@/lib/constants";
 import styles from "./Navbar.module.css";
 
 const NAV_LINKS = [
@@ -19,7 +20,6 @@ const NAV_LINKS = [
 export default function Navbar() {
     const pathname = usePathname();
     const [points, setPoints] = useState<number | null>(null);
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
     const fetchPoints = async () => {
         try {

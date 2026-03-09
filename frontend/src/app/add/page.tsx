@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import styles from "./page.module.css";
+import { API_URL as API } from "@/lib/constants";
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 const CATEGORIES = ["식당", "카페", "쇼핑", "교통", "배달", "의료/건강", "문화/여가", "구독", "기타"];
 

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { API_URL } from "@/lib/constants";
 import styles from './page.module.css';
 // import MoneyTree removed
 
@@ -31,7 +32,6 @@ export default function MissionsPage() {
     const [level, setLevel] = useState(1);
     const [loading, setLoading] = useState(true);
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
     const fetchData = async () => {
         try {

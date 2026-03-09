@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import styles from "./MissionCard.module.css";
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+import { API_URL as API } from "@/lib/constants";
 
 interface Mission {
     id: number;

@@ -16,10 +16,10 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./page.module.css";
 import LocationWarning from "@/components/LocationWarning";
+import { API_URL as API } from "@/lib/constants";
 
 Chart.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 const PALETTE = [
     "#4f8ef7", "#8b5cf6", "#10d9a0", "#f97316",

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import styles from './page.module.css';
 import MoneyTree from '@/components/MoneyTree';
+import { API_URL } from "@/lib/constants";
 
 interface UserProgress {
     total_points: number;
@@ -21,7 +22,6 @@ export default function TreePage() {
     const [message, setMessage] = useState('무럭무럭 자라고 있어요!');
     const [subMessage, setSubMessage] = useState('오늘도 나무를 돌봐주세요');
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
     const fetchProgress = async () => {
         try {
