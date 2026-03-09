@@ -4,6 +4,8 @@
 
 import os
 from dotenv import load_dotenv
+load_dotenv()  # 모든 임포트 전에 호출하여 환경변수 주입 보장
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -15,10 +17,7 @@ from routers.analysis import router as analysis_router
 from routers.gamification import router as gamification_router
 from routers.native import router as native_router
 
-load_dotenv()
-
 # DB 테이블 생성
-import models.expense  # 모든 모델 테이블 생성 보장
 models.expense.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(

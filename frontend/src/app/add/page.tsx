@@ -16,6 +16,7 @@ export default function AddExpensePage() {
     const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
     const [loading, setLoading] = useState(false);
     const [ocrLoading, setOcrLoading] = useState(false);
+    const [preview, setPreview] = useState<string | null>(null);
     const router = useRouter();
 
     const EMOTIONS = [
@@ -51,6 +52,11 @@ export default function AddExpensePage() {
         const file = e.target.files?.[0];
         if (!file) return;
 
+        // 미리보기 생성
+        const reader = new FileReader();
+        reader.onloadend = () => setPreview(reader.result as string);
+        reader.readAsDataURL(file);
+
         setOcrLoading(true);
         const formData = new FormData();
         formData.append("file", file);
@@ -62,9 +68,9 @@ export default function AddExpensePage() {
             setAmount(data.amount.toLocaleString());
             setCategory(data.category);
             if (data.date) setDate(data.date);
-            alert("영수증 분석 완료!");
+            alert("영수증 분석 완료! 내역을 확인해주세요.");
         } catch (err) {
-            alert("영수증 분석에 실패했습니다.");
+            alert("영수증 분석에 실패했습니다. 백엔드의 OPENAI_API_KEY 설정을 확인해주세요.");
         } finally {
             setOcrLoading(false);
         }
@@ -86,9 +92,27 @@ export default function AddExpensePage() {
                 <div className={styles.ocrContainer}>
                     <label className={styles.ocrBtn}>
                         <input type="file" accept="image/*" onChange={handleOCR} hidden disabled={ocrLoading} />
-                        <span style={{ fontSize: "1.5rem" }}>{ocrLoading ? "⌛" : "📸"}</span>
-                        <span>{ocrLoading ? "영수증 분석 중..." : "영수증 스캔하여 자동 입력"}</span>
+
+                        {preview ? (
+                            <div className={styles.previewContainer}>
+                                <img src={preview} alt="Receipt preview" className={styles.previewImage} />
+                                {ocrLoading && <div className={styles.scanLine} />}
+                            </div>
+                        ) : (
+                            <>
+                                <span className={styles.magicSparkle}>✨</span>
+                                <span style={{ fontSize: "2rem" }}>📸</span>
+                                <span style={{ fontWeight: 700 }}>영수증 스캔하여 자동 입력</span>
+                                <span style={{ fontSize: "0.8rem", opacity: 0.7 }}>사진을 올리면 AI가 내용을 채워줘요</span>
+                            </>
+                        )}
+                        {ocrLoading && !preview && <div className="spinner mt-2" />}
                     </label>
+                    {preview && !ocrLoading && (
+                        <button className="text-sm text-blue-500 font-semibold" onClick={() => setPreview(null)}>
+                            다른 사진 선택하기
+                        </button>
+                    )}
                 </div>
 
                 <form onSubmit={onSubmit} className={styles.form}>

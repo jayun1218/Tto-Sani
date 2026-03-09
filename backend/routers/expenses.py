@@ -67,49 +67,27 @@ def create_expense(expense_in: ExpenseCreate, db: Session = Depends(get_db)):
     )
 
 
-@router.post("/ocr", response_model=ExpenseOut)
-async def ocr_expense(file: UploadFile = File(...), db: Session = Depends(get_db)):
-    """영수증 이미지를 분석하여 자동으로 지출 내역을 생성한다."""
+@router.post("/ocr")
+async def ocr_expense(file: UploadFile = File(...)):
+    """영수증 이미지를 분석하여 데이터만 반환한다 (DB 저장 안 함)."""
     os.makedirs("temp_uploads", exist_ok=True)
     file_path = f"temp_uploads/{file.filename}"
     
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-    
-    analysis = analyze_receipt(file_path)
-    # 임시 파일 삭제
-    if os.path.exists(file_path):
-        os.remove(file_path)
-
-    if not analysis:
-        raise HTTPException(status_code=400, detail="영수증 분석에 실패했습니다.")
-
     try:
-        date_str = analysis.get("date")
-        date_val = datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else datetime.now().date()
-    except ValueError:
-        date_val = datetime.now().date()
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        analysis = analyze_receipt(file_path)
+        
+        if not analysis:
+            raise HTTPException(status_code=400, detail="영수증 분석에 실패했습니다. API 키나 파일 형식을 확인해주세요.")
 
-    expense = Expense(
-        date=date_val,
-        description=analysis["description"],
-        amount=analysis["amount"],
-        category=analysis["category"],
-        emotion="neutral"  # OCR 입력 시 기본값
-    )
-    db.add(expense)
-    db.commit()
-    db.refresh(expense)
+        return analysis # 분석된 데이터만 반환 (description, amount, category, date)
 
-    return ExpenseOut(
-        id=expense.id,
-        date=str(expense.date),
-        description=expense.description,
-        amount=expense.amount,
-        category=expense.category,
-        is_impulse=expense.is_impulse,
-        emotion=expense.emotion
-    )
+    finally:
+        # 임시 파일 삭제
+        if os.path.exists(file_path):
+            os.remove(file_path)
 
 
 @router.get("/", response_model=List[ExpenseOut])

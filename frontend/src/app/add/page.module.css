@@ -76,22 +76,130 @@
     color: #4f8ef7;
 }
 
-.typeBtn {
-    padding: 8px 16px;
+/* ───────── New Premium OCR & Emotion Styles ───────── */
+
+.ocrContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 32px;
+    gap: 16px;
+}
+
+.ocrBtn {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: linear-gradient(135deg, rgba(79, 142, 247, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border: 2px dashed rgba(79, 142, 247, 0.3);
+    border-radius: 24px;
+    padding: 30px;
+    width: 100%;
+    color: #4f8ef7;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.ocrBtn:hover {
+    background: linear-gradient(135deg, rgba(79, 142, 247, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+    border-color: #4f8ef7;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(79, 142, 247, 0.1);
+}
+
+.previewContainer {
+    width: 100%;
+    max-height: 250px;
     border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.previewImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0.8);
+}
+
+.scanLine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(to right, transparent, #4f8ef7, transparent);
+    box-shadow: 0 0 15px #4f8ef7;
+    animation: scanning 2s linear infinite;
+    z-index: 2;
+}
+
+@keyframes scanning {
+    0% {
+        top: 0;
+    }
+
+    100% {
+        top: 100%;
+    }
+}
+
+.magicSparkle {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 1.5rem;
+    animation: rotate 4s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Emotion Selector */
+.emotionGrid {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.emotionBtn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 5px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #8896b3;
-    font-size: 0.85rem;
-    font-weight: 600;
+    border-radius: 12px;
+    font-size: 1.2rem;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.typeActive {
-    background: #4f8ef7;
+.emotionBtn span {
+    font-size: 0.7rem;
+    color: #8896b3;
+}
+
+.activeEmotion {
+    background: rgba(79, 142, 247, 0.2);
     border-color: #4f8ef7;
-    color: white;
+}
+
+.activeEmotion span {
+    color: #4f8ef7;
 }
 
 @media (max-width: 480px) {

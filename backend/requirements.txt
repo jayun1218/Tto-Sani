@@ -4,6 +4,6 @@ sqlalchemy==2.0.35
 python-multipart==0.0.12
 pandas==2.2.3
 numpy==2.1.1
-openai==1.51.0
+openai==2.26.0
 python-dotenv==1.0.1
 aiofiles==24.1.0
