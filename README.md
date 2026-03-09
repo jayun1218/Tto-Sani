@@ -73,14 +73,19 @@ npm run dev
 ```
 Tto-Sani/
 ├── backend/            # FastAPI 서버 및 데이터베이스
-│   ├── ai/             # AI 분석 및 조언 엔진
-│   ├── models/         # SQLAlchemy 모델 (Expense, Attendance 등)
-│   ├── routers/        # 기능별 API 엔드포인트
-│   └── main.py         # 앱 진입점
+│   ├── models/         # SQLAlchemy 모델 (Expense, UserProgress 등)
+│   ├── routers/        # 기능별 API 엔드포인트 (expenses, analysis 등)
+│   ├── services/       # 핵심 분석 엔진
+│   │   ├── ocr_service.py      # GPT-4o Vision 기반 영수증 분석
+│   │   ├── persona_manager.py  # AI 소비 페르소나 결정 로직
+│   │   └── ai_advisor.py       # 맞춤형 절약 팁 생성
+│   └── main.py         # 앱 진입점 (환경 변수 로딩 및 라우터 등록)
 ├── frontend/           # Next.js 클라이언트
 │   ├── src/
-│   │   ├── app/        # 페이지 레이아웃 (Dashboard, Tree, Attendance)
-│   │   └── components/ # UI 컴포넌트 (Navbar, MoneyTree 등)
+│   │   ├── app/        # 페이지 (Dashboard, Add Expense, Attendance)
+│   │   └── components/ # UI 컴포넌트
+│   │       ├── LocationWarning.tsx # 위치 기반 실시간 경고 모달
+│   │       └── MoneyTree.tsx       # 게이미피케이션 돈나무
 └── README.md           # 프로젝트 가이드라인
 ```
 
