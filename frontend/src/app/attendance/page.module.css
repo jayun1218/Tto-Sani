@@ -3,7 +3,7 @@
     background: #f8fbff;
     display: flex;
     flex-direction: column;
-    padding: 100px 1.5rem 6rem;
+    padding: calc(env(safe-area-inset-top) + 20px) 1.5rem calc(env(safe-area-inset-bottom) + 100px);
     font-family: 'Pretendard', sans-serif;
 }
 

@@ -7,8 +7,9 @@
     background: rgba(17, 21, 31, 0.98);
     backdrop-filter: blur(25px);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 10px 0 calc(env(safe-area-inset-bottom) + 10px);
-    height: calc(env(safe-area-inset-bottom) + 70px);
+    padding: 10px 0 calc(env(safe-area-inset-bottom) + 20px);
+    height: auto;
+    min-height: calc(env(safe-area-inset-bottom) + 85px);
 }
 
 .inner {
