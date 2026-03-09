@@ -7,9 +7,9 @@
     background: rgba(17, 21, 31, 0.98);
     backdrop-filter: blur(25px);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 10px 0 calc(env(safe-area-inset-bottom) + 20px);
+    padding: 10px 0 calc(env(safe-area-inset-bottom) + 10px);
     height: auto;
-    min-height: calc(env(safe-area-inset-bottom) + 85px);
+    min-height: calc(env(safe-area-inset-bottom) + 75px);
 }
 
 .inner {
@@ -45,7 +45,7 @@
 }
 
 .centerItem {
-    transform: translateY(-20px);
+    transform: translateY(-8px);
     z-index: 1001;
 }
 

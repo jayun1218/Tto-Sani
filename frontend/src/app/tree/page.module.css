@@ -4,8 +4,11 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    padding-top: calc(env(safe-area-inset-top) + 60px);
     overflow-x: hidden;
-    font-family: 'Pretendard', -apple-system, sans-serif;
+    font-family: 'Pretendard',
+        -apple-system,
+        sans-serif;
 }
 
 @media (min-width: 769px) {
@@ -15,7 +18,7 @@
 }
 
 .header {
-    padding: calc(env(safe-area-inset-top) + 2.5rem) 1.5rem 0.5rem;
+    padding: 1rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
