@@ -7,3 +7,4 @@ numpy==2.1.1
 openai==2.26.0
 python-dotenv==1.0.1
 aiofiles==24.1.0
+psycopg2-binary==2.9.9
