@@ -15,6 +15,7 @@ import { Doughnut, Bar } from "react-chartjs-2";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./page.module.css";
+import LocationWarning from "@/components/LocationWarning";
 
 Chart.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
 
@@ -33,6 +34,7 @@ export default function Home() {
     const [summary, setSummary] = useState<any>(null);
     const [prediction, setPrediction] = useState<any>(null);
     const [watchdog, setWatchdog] = useState<any[]>([]);
+    const [persona, setPersona] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -42,14 +44,16 @@ export default function Home() {
 
     const fetchData = async () => {
         try {
-            const [summaryRes, predictionRes, watchdogRes] = await Promise.all([
+            const [summaryRes, predictionRes, watchdogRes, personaRes] = await Promise.all([
                 axios.get(`${API}/analysis/summary`),
                 axios.get(`${API}/analysis/prediction`),
                 axios.get(`${API}/analysis/watchdog`),
+                axios.get(`${API}/analysis/persona`),
             ]);
             setSummary(summaryRes.data);
             setPrediction(predictionRes.data);
             setWatchdog(watchdogRes.data);
+            setPersona(personaRes.data);
         } catch (err) {
             setError("백엔드 서버에 연결할 수 없습니다.");
             console.error("Failed to fetch data:", err);
@@ -157,6 +161,7 @@ export default function Home() {
     return (
         <div className={styles.page}>
             <div className="container">
+                <LocationWarning personaName={persona?.persona} personaMessage={persona?.message} />
                 <div className={styles.header}>
                     <div>
                         <span className="badge badge-purple">📊 소비 분석</span>
@@ -171,11 +176,18 @@ export default function Home() {
                     <div className={styles.personaCard} style={{ background: getPersona(topCategory).gradient }}>
                         <div className={styles.personaBadge}>이번 달 페르소나</div>
                         <div className={styles.avatarWrap}>
-                            <div className={styles.personaEmoji}>{getPersona(topCategory).emoji}</div>
+                            <div className={styles.personaEmoji}>
+                                {persona?.persona === "지름신 부엉이" ? "🦉" :
+                                    persona?.persona === "카페인 중독 고양이" ? "🐱" :
+                                        persona?.persona === "미식가 강아지" ? "🐶" :
+                                            persona?.persona === "트렌드세터 여우" ? "🦊" :
+                                                persona?.persona === "철벽 다람쥐" ? "🐿️" :
+                                                    persona?.persona === "성실한 나무지기" ? "👨‍🌾" : "🌱"}
+                            </div>
                         </div>
                         <div className={styles.personaInfo}>
-                            <h2>{getPersona(topCategory).title}</h2>
-                            <p className={styles.personaDesc}>{getPersona(topCategory).desc}</p>
+                            <h2>{persona?.persona || "평범한 새싹"}</h2>
+                            <p className={styles.personaDesc}>{persona?.message || "기록을 시작해볼까요?"}</p>
                         </div>
                     </div>
 

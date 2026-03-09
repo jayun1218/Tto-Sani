@@ -9,6 +9,10 @@ from pydantic import BaseModel
 from database import get_db
 from models.expense import Expense
 from services.classifier import classify_expense
+from services.ocr_service import analyze_receipt
+from fastapi import File, UploadFile
+import shutil
+import os
 
 router = APIRouter(prefix="/expenses", tags=["expenses"])
 
@@ -18,6 +22,7 @@ class ExpenseCreate(BaseModel):
     description: str
     amount: float
     category: str
+    emotion: Optional[str] = None
 
 
 class ExpenseOut(BaseModel):
@@ -27,6 +32,7 @@ class ExpenseOut(BaseModel):
     amount: float
     category: str
     is_impulse: int
+    emotion: Optional[str]
 
     class Config:
         from_attributes = True
@@ -45,6 +51,7 @@ def create_expense(expense_in: ExpenseCreate, db: Session = Depends(get_db)):
         description=expense_in.description,
         amount=expense_in.amount,
         category=expense_in.category,
+        emotion=expense_in.emotion
     )
     db.add(expense)
     db.commit()
@@ -55,7 +62,53 @@ def create_expense(expense_in: ExpenseCreate, db: Session = Depends(get_db)):
         description=expense.description,
         amount=expense.amount,
         category=expense.category,
-        is_impulse=expense.is_impulse
+        is_impulse=expense.is_impulse,
+        emotion=expense.emotion
+    )
+
+
+@router.post("/ocr", response_model=ExpenseOut)
+async def ocr_expense(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    """영수증 이미지를 분석하여 자동으로 지출 내역을 생성한다."""
+    os.makedirs("temp_uploads", exist_ok=True)
+    file_path = f"temp_uploads/{file.filename}"
+    
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    analysis = analyze_receipt(file_path)
+    # 임시 파일 삭제
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    if not analysis:
+        raise HTTPException(status_code=400, detail="영수증 분석에 실패했습니다.")
+
+    try:
+        date_str = analysis.get("date")
+        date_val = datetime.strptime(date_str, "%Y-%m-%d").date() if date_str else datetime.now().date()
+    except ValueError:
+        date_val = datetime.now().date()
+
+    expense = Expense(
+        date=date_val,
+        description=analysis["description"],
+        amount=analysis["amount"],
+        category=analysis["category"],
+        emotion="neutral"  # OCR 입력 시 기본값
+    )
+    db.add(expense)
+    db.commit()
+    db.refresh(expense)
+
+    return ExpenseOut(
+        id=expense.id,
+        date=str(expense.date),
+        description=expense.description,
+        amount=expense.amount,
+        category=expense.category,
+        is_impulse=expense.is_impulse,
+        emotion=expense.emotion
     )
 
 
@@ -77,6 +130,7 @@ def get_expenses(
             amount=e.amount,
             category=e.category,
             is_impulse=e.is_impulse,
+            emotion=e.emotion,
         )
         for e in expenses
     ]

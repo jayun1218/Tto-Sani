@@ -12,6 +12,7 @@ class Expense(Base):
     amount = Column(Float, nullable=False)          # 지출 금액
     category = Column(String, default="기타")       # 분류된 카테고리
     is_impulse = Column(Integer, default=0)         # 충동 소비 여부 (0/1)
+    emotion = Column(String, nullable=True)         # 지출 시 감정 태그
 
 
 class Mission(Base):
@@ -35,6 +36,7 @@ class UserProgress(Base):
     attendance_streak = Column(Integer, default=0)  # 연속 출석 일수
     last_attendance_date = Column(Date)
     last_mission_date = Column(Date)
+    persona = Column(String, default="평범한 새싹") # AI 소비 페르소나
 class AttendanceRecord(Base):
     __tablename__ = "attendance_records"
 

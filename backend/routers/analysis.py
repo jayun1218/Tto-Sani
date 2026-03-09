@@ -16,6 +16,7 @@ from services.analyzer import (
     compare_trends, analyze_budgets
 )
 from services.ai_advisor import generate_tips
+from services.persona_manager import update_user_persona, get_persona_message
 
 router = APIRouter(prefix="/analysis", tags=["analysis"])
 
@@ -150,3 +151,11 @@ def set_budget(category: str, amount: float, db: Session = Depends(get_db)):
         db.add(budget)
     db.commit()
     return {"status": "success", "category": category, "amount": amount}
+
+
+@router.get("/persona")
+def get_persona(db: Session = Depends(get_db)):
+    """현재 사용자의 페르소나 정보를 반환한다."""
+    persona = update_user_persona(db)
+    message = get_persona_message(persona)
+    return {"persona": persona, "message": message}
